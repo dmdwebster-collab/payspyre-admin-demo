@@ -1,0 +1,41 @@
+{
+  "mcpServers": {
+    "supabase": {
+      "command": "npx",
+      "args": ["-y", "@supabase/mcp-server-supabase@latest"],
+      "env": {
+        "SUPABASE_URL": "TODO: set SUPABASE_URL in your shell environment (never commit this value)",
+        "SUPABASE_SERVICE_ROLE_KEY": "REPLACE_ME — get from Supabase dashboard > Settings > API > service_role key (server-side only)"
+      }
+    },
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "REPLACE_ME — create a fine-grained PAT at github.com/settings/tokens with repo scope for dmdwebster-collab"
+      }
+    },
+    "notion": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-notion"],
+      "env": {
+        "NOTION_API_KEY": "REPLACE_ME — create an internal integration at notion.so/my-integrations and share your workspace pages with it"
+      }
+    },
+    "n8n": {
+      "command": "npx",
+      "args": ["-y", "@n8n/mcp-server"],
+      "env": {
+        "N8N_BASE_URL": "REPLACE_ME — your n8n instance URL (e.g. https://n8n.yourdomain.com)",
+        "N8N_API_KEY": "REPLACE_ME — generate at [your n8n instance]/settings/api"
+      }
+    }
+  },
+  "_setup_instructions": {
+    "step_1": "Copy this file to ~/.claude/mcp.json OR keep it in .claude/mcp.json (Claude Code reads both)",
+    "step_2": "Replace all REPLACE_ME values with real credentials — use env variables, do NOT hardcode",
+    "step_3": "Never commit real credentials. Add .claude/mcp.json to .gitignore if you fill in real values locally",
+    "step_4": "Restart Claude Code after updating this file for changes to take effect",
+    "payspyre_note": "For PaySpyre specifically: the Supabase MCP gives Claude live access to your shared schema across all 4 surfaces. Run `supabase gen types typescript --local` after any schema change."
+  }
+}
