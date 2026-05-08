@@ -111,6 +111,15 @@ Carryovers from the existing TurnKey deployment are marked **(existing)**.
   rows linking back to the Originations Loan Header. Each future tab is
   documented with a `StubBanner` listing spec fields. Sidebar tags these
   as `PR #3 · scaffolded`.
+- **PR #3.1 (credit-product refactor):** eliminate TurnKey's
+  one-frequency / one-rate-band / one-term-band-per-product limitation.
+  `CreditProduct` now carries `permitted_frequencies[]` plus
+  `amount_brackets[]`, where each bracket owns its own `permitted_terms[]`
+  and `rate_band`. Helpers `findApplicableBracket` and `validateOfferTerms`
+  are the single entrypoint for offer validation. SQL mirror uses
+  normalized child tables (`credit_product_amount_brackets`,
+  `credit_product_term_bands`). Direction documented verbatim from David
+  Wilson in `docs/spec/credit-product-architecture.md`.
 - **PR #4+ (workplace build-out):** flesh out the actual tab UIs in
   Underwriting, Servicing, Collections, Reports, Archive, and Settings
   (every `StubBanner` becomes a real tab). Will need a loans + payment_schedule
