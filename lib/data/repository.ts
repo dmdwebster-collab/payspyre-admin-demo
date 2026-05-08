@@ -10,13 +10,22 @@
 import loansJson from "./fixtures/loans.json";
 import vendorsJson from "./fixtures/vendors.json";
 import kpisJson from "./fixtures/kpis.json";
+import applicationsJson from "./fixtures/applications.json";
+import borrowersJson from "./fixtures/borrowers.json";
+import applicationStatusEventsJson from "./fixtures/application_status_events.json";
 import type { Loan } from "../types/loan";
 import type { Vendor } from "../types/vendor";
+import type { Application, ApplicationStatusEvent } from "../types/application";
+import type { Borrower } from "../types/borrower";
 
 // Cast JSON imports to typed arrays. The fixtures are derived from the
 // legacy v1 dataset and conform to the schemas in lib/types/.
 const LOANS = loansJson as unknown as Loan[];
 const VENDORS = vendorsJson as unknown as Vendor[];
+const APPLICATIONS = applicationsJson as unknown as Application[];
+const BORROWERS = borrowersJson as unknown as Borrower[];
+const APPLICATION_STATUS_EVENTS =
+  applicationStatusEventsJson as unknown as ApplicationStatusEvent[];
 
 export interface PortfolioKpis {
   summary: Record<string, number>;
@@ -58,5 +67,54 @@ export const repository = {
   },
   async getKpis(): Promise<PortfolioKpis> {
     return KPIS;
+  },
+
+  // -- Applications (Originations workplace, PR #2) ----------------------
+
+  async listApplications(): Promise<Application[]> {
+    return APPLICATIONS;
+  },
+  async getApplication(id: string): Promise<Application | undefined> {
+    return APPLICATIONS.find((a) => a.id === id || a.application_number === id);
+  },
+  async listApplicationsByStatus(
+    status: Application["status"],
+  ): Promise<Application[]> {
+    return APPLICATIONS.filter((a) => a.status === status);
+  },
+  async listApplicationsByVendor(vendor_id: string): Promise<Application[]> {
+    return APPLICATIONS.filter((a) => a.vendor_id === vendor_id);
+  },
+
+  // -- Borrowers --------------------------------------------------------
+
+  async getBorrower(id: string): Promise<Borrower | undefined> {
+    return BORROWERS.find((b) => b.id === id);
+  },
+  async getBorrowersForApplication(
+    application_id: string,
+  ): Promise<{ primary?: Borrower; co?: Borrower }> {
+    const app = APPLICATIONS.find((a) => a.id === application_id);
+    if (!app) return {};
+    return {
+      primary: app.primary_borrower_id
+        ? BORROWERS.find((b) => b.id === app.primary_borrower_id)
+        : undefined,
+      co: app.co_borrower_id
+        ? BORROWERS.find((b) => b.id === app.co_borrower_id) ?? undefined
+        : undefined,
+    };
+  },
+
+  // -- Status events (Workflow tab) -------------------------------------
+
+  async listEventsForApplication(
+    application_id: string,
+  ): Promise<ApplicationStatusEvent[]> {
+    return APPLICATION_STATUS_EVENTS.filter(
+      (e) => e.application_id === application_id,
+    ).sort((a, b) =>
+      a.occurred_at < b.occurred_at ? 1 : -1,
+    );
   },
 };
