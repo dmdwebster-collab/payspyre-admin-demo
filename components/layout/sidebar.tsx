@@ -21,7 +21,7 @@ const NAV_ITEMS: NavItem[] = [
 
 const WORKPLACE_ITEMS: NavItem[] = [
   { label: "Vendor Onboarding", href: "/vendor-onboarding", icon: "◆", status: "pr1_2" },
-  { label: "Originations", href: "/originations", icon: "✎", status: "pr2_partial" },
+  { label: "Originations", href: "/originations", icon: "✎", status: "pr2" },
   { label: "Underwriting", href: "/underwriting", icon: "✓", status: "pr3" },
   { label: "Servicing", href: "/servicing", icon: "⟳", status: "pr3" },
   { label: "Collections", href: "/collections", icon: "!", status: "pr3" },
