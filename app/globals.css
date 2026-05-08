@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html, body {
+    @apply h-full bg-navy-900 text-ink antialiased;
+    font-family: theme("fontFamily.sans");
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  * { box-sizing: border-box; }
+}
+
+@layer components {
+  .ps-card {
+    @apply bg-navy-800 border border-line rounded-lg;
+  }
+  .ps-card-header {
+    @apply px-5 py-4 border-b border-line-soft text-sm font-medium text-ink-dim uppercase tracking-wider;
+  }
+  .ps-tag {
+    @apply inline-flex items-center px-2 py-0.5 rounded text-xs font-medium;
+  }
+  .ps-mono {
+    font-family: theme("fontFamily.mono");
+  }
+}
