@@ -5,8 +5,12 @@ import {
   executeAction,
   getAvailableActions,
   StatusTransitionError,
+  PreconditionError,
+  checkActionPreconditions,
 } from "./status-flow";
 import type { Application } from "./types/application";
+import type { CreditProduct } from "./types/credit-product";
+import { isCheckFresh } from "./types/credit-product";
 
 const baseApp: Application = {
   id: "APP-TEST-001",
@@ -131,5 +135,132 @@ describe("status-flow", () => {
     const fromOrigination = getAvailableActions("CREDIT_UNDERWRITING", "origination");
     expect(fromUnderwriting.length).toBeGreaterThan(0);
     expect(fromOrigination.length).toBe(0); // CREDIT_UNDERWRITING is owned by underwriting
+  });
+});
+
+// --- Verification freshness / preconditions (David's PR #1 corrections) ---
+
+const dentalProduct: CreditProduct = {
+  id: "prod-1",
+  code: "DENT-12M",
+  name: "Dental 12-month",
+  active: true,
+  provinces: ["BC", "AB"],
+  min_amount: 500,
+  max_amount: 25000,
+  min_term_months: 6,
+  max_term_months: 60,
+  base_rate: 12.99,
+  origination_fee_pct: 0,
+  requires_credit_bureau: true,
+  requires_bank_verification: true,
+  credit_report_validity_days: 30,
+  bank_verification_validity_days: 30,
+  created_at: "2026-05-07T12:00:00.000Z",
+  updated_at: "2026-05-07T12:00:00.000Z",
+};
+
+const noBureauProduct: CreditProduct = {
+  ...dentalProduct,
+  id: "prod-2",
+  code: "NOBUR",
+  requires_credit_bureau: false,
+};
+
+describe("isCheckFresh", () => {
+  const asOf = new Date("2026-06-01T00:00:00.000Z");
+  it("returns false when no timestamp is set", () => {
+    expect(isCheckFresh(null, 30, asOf)).toBe(false);
+    expect(isCheckFresh(undefined, 30, asOf)).toBe(false);
+  });
+  it("returns true within the validity window", () => {
+    expect(isCheckFresh("2026-05-15T00:00:00.000Z", 30, asOf)).toBe(true);
+  });
+  it("returns false past the validity window", () => {
+    expect(isCheckFresh("2026-04-15T00:00:00.000Z", 30, asOf)).toBe(false);
+  });
+});
+
+describe("checkActionPreconditions", () => {
+  const asOf = new Date("2026-06-01T00:00:00.000Z");
+  const fresh = "2026-05-20T00:00:00.000Z"; // 12 days old → fresh
+  const stale = "2026-04-15T00:00:00.000Z"; // 47 days old → stale
+
+  it("blocks Application Verification when Credit Report is missing", () => {
+    const app: Application = {
+      ...baseApp,
+      status: "CREDIT_UNDERWRITING",
+      bank_verification_completed_at: fresh,
+    };
+    const reason = checkActionPreconditions(app, "request_additional_info", dentalProduct, asOf);
+    expect(reason).toMatch(/Credit Report/);
+  });
+
+  it("blocks Application Verification when Bank Verification is stale", () => {
+    const app: Application = {
+      ...baseApp,
+      status: "CREDIT_UNDERWRITING",
+      credit_report_completed_at: fresh,
+      bank_verification_completed_at: stale,
+    };
+    const reason = checkActionPreconditions(app, "request_additional_info", dentalProduct, asOf);
+    expect(reason).toMatch(/Bank Verification/);
+  });
+
+  it("allows Application Verification when both upstream checks are fresh", () => {
+    const app: Application = {
+      ...baseApp,
+      status: "CREDIT_UNDERWRITING",
+      credit_report_completed_at: fresh,
+      bank_verification_completed_at: fresh,
+    };
+    const reason = checkActionPreconditions(app, "request_additional_info", dentalProduct, asOf);
+    expect(reason).toBeNull();
+  });
+
+  it("skips Credit Report requirement for products with bureau toggled off", () => {
+    const app: Application = {
+      ...baseApp,
+      status: "CREDIT_UNDERWRITING",
+      bank_verification_completed_at: fresh,
+    };
+    const reason = checkActionPreconditions(app, "request_additional_info", noBureauProduct, asOf);
+    expect(reason).toBeNull();
+  });
+
+  it("blocks approve when Application Verification is missing", () => {
+    const app: Application = {
+      ...baseApp,
+      status: "CREDIT_UNDERWRITING",
+      credit_report_completed_at: fresh,
+      bank_verification_completed_at: fresh,
+    };
+    const reason = checkActionPreconditions(app, "approve", dentalProduct, asOf);
+    expect(reason).toMatch(/Application Verification/);
+  });
+
+  it("allows approve when all three checks are fresh", () => {
+    const app: Application = {
+      ...baseApp,
+      status: "CREDIT_UNDERWRITING",
+      credit_report_completed_at: fresh,
+      bank_verification_completed_at: fresh,
+      application_verification_completed_at: fresh,
+    };
+    const reason = checkActionPreconditions(app, "approve", dentalProduct, asOf);
+    expect(reason).toBeNull();
+  });
+
+  it("executeAction throws PreconditionError when product is provided and checks fail", () => {
+    const app: Application = {
+      ...baseApp,
+      status: "CREDIT_UNDERWRITING",
+    };
+    expect(() => executeAction(app, "approve", actor, dentalProduct)).toThrow(PreconditionError);
+  });
+
+  it("executeAction skips precondition checks when product is omitted (back-compat)", () => {
+    const app: Application = { ...baseApp, status: "CREDIT_UNDERWRITING" };
+    expect(() => executeAction(app, "approve", actor)).not.toThrow();
   });
 });
