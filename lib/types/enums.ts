@@ -72,6 +72,29 @@ export type CloseType = (typeof CLOSE_TYPES)[number];
 export const CONTACT_METHODS = ["Phone", "Email", "SMS", "Dashboard", "Mail"] as const;
 export type ContactMethod = (typeof CONTACT_METHODS)[number];
 
+/**
+ * Vendor onboarding state machine. Lives separately from the borrower-side
+ * Application Status Flow but follows the same audit-event pattern.
+ * See lib/vendor-onboarding-flow.ts.
+ */
+export const VENDOR_ONBOARDING_STATUSES = [
+  "INTEREST_REGISTERED",
+  "APPLICATION_SUBMITTED",
+  "KYB_IN_PROGRESS",
+  "KYB_REVIEW",
+  "BANKING_VERIFICATION",
+  "MSA_SENT",
+  "MSA_SIGNED",
+  "PROVISIONING",
+  "TRAINING",
+  "LIVE",
+  "DECLINED",
+  "WITHDRAWN",
+  "SUSPENDED",
+  "OFFBOARDED",
+] as const;
+export type VendorOnboardingStatus = (typeof VENDOR_ONBOARDING_STATUSES)[number];
+
 export const USER_ROLES = [
   "admin", // PaySpyre staff — cross-vendor access
   "underwriter",
