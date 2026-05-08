@@ -61,9 +61,9 @@ export default function SettingsPage() {
 
       <StubBanner
         pr="PR #3"
-        description="Loan Settings — product catalog and default terms per province. Each credit product carries its own verification requirements and reuse windows."
+        description="Loan Settings — global standardized credit-product catalog (not customized per vendor). Each product carries its own verification requirements and reuse windows. Per David's PR #1.2 input, vendor-level product customization is dropped — every vendor presents the same standardized offerings."
         fields={[
-          "Credit products (per CreditProduct in lib/types/credit-product.ts)",
+          "Credit products (per CreditProduct in lib/types/credit-product.ts) — global, not per-vendor",
           "Min / max amount",
           "Min / max term (months)",
           "Rate bands per risk tier",
