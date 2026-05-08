@@ -5,5 +5,6 @@ export * from "./loan";
 export * from "./transaction";
 export * from "./bank";
 export * from "./application";
+export * from "./credit-product";
 export * from "./contact";
 export * from "./document";
