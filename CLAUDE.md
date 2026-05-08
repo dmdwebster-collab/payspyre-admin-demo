@@ -105,8 +105,16 @@ Carryovers from the existing TurnKey deployment are marked **(existing)**.
   Supabase (Customer Details, Co-Borrower, Bank Details, Summary, Initial
   Schedule, Workflow, Contacts, Documents, Bank Statements, Comments) +
   RLS policies + Flinks/Zum Rails wire-up.
-- **PR #3 (Underwriting / Servicing / Collections / Reports / Archive /
-  Settings):** flesh out the remaining six workplaces.
+- **PR #3 (section scaffolding):** the remaining six workplaces
+  (Underwriting / Servicing / Collections / Reports / Archive / Settings)
+  get real worklist previews wired to fixtures — queue + KPIs + sample
+  rows linking back to the Originations Loan Header. Each future tab is
+  documented with a `StubBanner` listing spec fields. Sidebar tags these
+  as `PR #3 · scaffolded`.
+- **PR #4+ (workplace build-out):** flesh out the actual tab UIs in
+  Underwriting, Servicing, Collections, Reports, Archive, and Settings
+  (every `StubBanner` becomes a real tab). Will need a loans + payment_schedule
+  + transactions data model to support Servicing/Collections.
 
 ### Future tracks (not in PR #1–#3)
 
