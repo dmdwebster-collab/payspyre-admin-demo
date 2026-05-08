@@ -13,11 +13,12 @@ work surfaces tied to the Application / Loan lifecycle).
 | `/vendors`     | Vendor portfolio metrics (11 clinics)                    |
 | `/performance` | Monthly origination trend                                |
 
-## Workplaces (7 — stubbed in PR #1)
+## Workplaces (8 — stubbed across PR #1, #1.2, #2, #3)
 
-| Workplace        | Route             | Status   | Tabs                                                                                                                                                  |
-| ---------------- | ----------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Originations** | `/originations`   | PR #2    | Customer Details, Co-Borrower, Bank Details, Summary, Initial Schedule, Workflow, Contacts, Documents, Bank Statements, Comments                      |
+| Workplace             | Route                | Status  | Tabs / sections                                                                                                                                       |
+| --------------------- | -------------------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Vendor Onboarding** | `/vendor-onboarding` | PR #1.2 | Interest queue, Application form, KYB queue, KYB Review, Banking Verification, MSA Dispatch, Provisioning, Training, Live vendors                     |
+| **Originations**      | `/originations`      | PR #2   | Customer Details, Co-Borrower, Bank Details, Summary, Initial Schedule, Workflow, Contacts, Documents, Bank Statements, Comments                      |
 | **Underwriting** | `/underwriting`   | PR #3    | _(inherits Originations tabs)_ + Risk Score, Verifications                                                                                            |
 | **Servicing**    | `/servicing`      | PR #3    | Extended Loan Header, Summary, Initial Schedule, Renewal, Transactions, Scheduled Transactions, Hardship                                              |
 | **Collections**  | `/collections`    | PR #3    | _(inherits Servicing tabs)_ + Action Plan, Promise to Pay                                                                                             |
@@ -82,10 +83,38 @@ Defined in `lib/types/*` with Zod schemas. Mirrored in `supabase/schema.sql`.
 
 - `Borrower`, `Application`, `ApplicationStatusEvent`
 - `Loan`, `LoanTransaction`
-- `Vendor`
+- `Vendor` (extended in PR #1.2 with onboarding lifecycle + KYB / banking /
+  MSA freshness)
+- `VendorApplication`, `VendorDirector`, `VendorOnboardingEvent` (PR #1.2)
 - `BankAccount`, `BankVerification`, `BankStatementTransaction`
 - `Document`
 - `ContactLog`, `ContactPreferences`
+- `CreditProduct` (PR #1.1 — global standardized catalog, not vendor-scoped)
+
+## Vendor Onboarding flow (PR #1.2)
+
+State machine in `lib/vendor-onboarding-flow.ts`. Replaces the current
+11-step ~2-week manual onboarding with a digital flow:
+
+```
+INTEREST_REGISTERED
+  → APPLICATION_SUBMITTED
+    → KYB_IN_PROGRESS
+      ↳ KYB_REVIEW (manual escalation)
+      → BANKING_VERIFICATION
+        → MSA_SENT → MSA_SIGNED → PROVISIONING → TRAINING → LIVE
+  → DECLINED / WITHDRAWN  (terminal)
+  → SUSPENDED ↔ LIVE       (post-LIVE non-terminal)
+  → OFFBOARDED            (terminal, from LIVE / SUSPENDED)
+```
+
+**Integration providers (per onboarding step):**
+
+- KYB / KYC: Trulioo or Persona (TBD — pilot before commit)
+- Banking verification: Flinks Capital business-account flow
+- MSA e-signature: SignNow
+- Vendor payouts post-LIVE: Zum Rails payment profile (created in
+  PROVISIONING)
 
 ## What's deliberately **not** in PR #1
 
