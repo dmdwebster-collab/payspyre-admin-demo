@@ -80,17 +80,23 @@ create table if not exists borrowers (
 -- bureau at all" → requires_credit_bureau On/Off. Validity windows apply
 -- independently and default to 30 days; if a fresh result already exists,
 -- the system reuses it rather than initiating a new pull.
+-- PR #3.1 (David Wilson) — credit products are now bracketed:
+--   * permitted_frequencies on the parent (Weekly / BiWeekly / SemiMonthly / Monthly)
+--   * one or more amount brackets per product, each with its own rate band
+--     and one or more permitted term bands.
+-- Normalized child tables are preferred over jsonb so we can index and query
+-- by amount / term cleanly (e.g. "which brackets accept this $4,200 offer").
 create table if not exists credit_products (
   id text primary key,
   code text not null unique,
   name text not null,
   active boolean not null default true,
   provinces text[] not null,
-  min_amount numeric(12,2) not null check (min_amount >= 0),
-  max_amount numeric(12,2) not null check (max_amount >= 0),
-  min_term_months integer not null check (min_term_months > 0),
-  max_term_months integer not null check (max_term_months > 0),
-  base_rate numeric(6,3) not null check (base_rate >= 0),
+  -- Multi-frequency support: a product may permit any subset of cadences.
+  permitted_frequencies text[] not null check (
+    array_length(permitted_frequencies, 1) >= 1
+    and permitted_frequencies <@ array['Weekly','BiWeekly','SemiMonthly','Monthly']
+  ),
   origination_fee_pct numeric(6,3) not null default 0 check (origination_fee_pct >= 0),
   requires_credit_bureau boolean not null default true,
   requires_bank_verification boolean not null default true,
@@ -101,6 +107,39 @@ create table if not exists credit_products (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+-- Amount brackets: non-overlapping principal ranges within a product.
+-- Each bracket carries its own rate band and one or more term bands.
+create table if not exists credit_product_amount_brackets (
+  id text primary key,
+  product_id text not null references credit_products(id) on delete cascade,
+  min_amount numeric(12,2) not null check (min_amount >= 0),
+  max_amount numeric(12,2) not null check (max_amount >= 0),
+  -- Rate band applies to this bracket only.
+  min_rate numeric(6,3) not null check (min_rate >= 0),
+  default_rate numeric(6,3) not null check (default_rate >= 0),
+  max_rate numeric(6,3) not null check (max_rate >= 0),
+  sort_order integer not null default 0,
+  check (max_amount >= min_amount),
+  check (min_rate <= default_rate and default_rate <= max_rate)
+);
+create index if not exists credit_product_amount_brackets_product_idx
+  on credit_product_amount_brackets(product_id);
+create index if not exists credit_product_amount_brackets_range_idx
+  on credit_product_amount_brackets(product_id, min_amount, max_amount);
+
+-- Term bands within a bracket. Multiple bands let a single bracket offer
+-- distinct term ceilings without forcing product duplication.
+create table if not exists credit_product_term_bands (
+  id text primary key,
+  bracket_id text not null references credit_product_amount_brackets(id) on delete cascade,
+  min_term_months integer not null check (min_term_months > 0),
+  max_term_months integer not null check (max_term_months > 0),
+  sort_order integer not null default 0,
+  check (max_term_months >= min_term_months)
+);
+create index if not exists credit_product_term_bands_bracket_idx
+  on credit_product_term_bands(bracket_id);
 
 create table if not exists applications (
   id text primary key, -- e.g. APP-2026-00042
