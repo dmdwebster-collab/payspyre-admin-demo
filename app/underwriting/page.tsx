@@ -1,6 +1,29 @@
+import { repository } from "@/lib/data/repository";
 import { StubBanner } from "@/components/ui/stub-banner";
+import { WorklistPreview } from "@/components/section/worklist-preview";
 
-export default function UnderwritingPage() {
+const UW_STATUSES = [
+  "APPLICATION_VERIFICATION",
+  "CREDIT_UNDERWRITING",
+] as const;
+
+export default async function UnderwritingPage() {
+  const [apps, borrowers] = await Promise.all([
+    repository.listApplications(),
+    repository.listBorrowers(),
+  ]);
+  const queue = apps.filter((a) =>
+    (UW_STATUSES as readonly string[]).includes(a.status),
+  );
+  const borrowersById = Object.fromEntries(borrowers.map((b) => [b.id, b]));
+
+  const inAV = queue.filter((a) => a.status === "APPLICATION_VERIFICATION").length;
+  const inCU = queue.filter((a) => a.status === "CREDIT_UNDERWRITING").length;
+  const totalRequested = queue.reduce(
+    (s, a) => s + (a.offer_amount ?? a.requested_amount),
+    0,
+  );
+
   return (
     <div className="p-6 max-w-[1400px] mx-auto space-y-6">
       <header>
@@ -15,30 +38,49 @@ export default function UnderwritingPage() {
         </p>
       </header>
 
-      <StubBanner
-        pr="PR #3"
-        description="Risk Score tab — composite score from Equifax bureau pull + bank-statement signals + application data, plus per-rule pass/fail."
-        fields={[
-          "Composite risk score",
-          "Risk tier (A | B | C | D)",
-          "Bank score / sub-signals",
-          "Bureau score (Equifax)",
-          "Application score",
-          "Decision Engine rule results (pass/fail per rule)",
-          "Recommended decision (Approve | Decline | Refer)",
-          "Override (with reason + user)",
+      <WorklistPreview
+        title="Underwriting queue"
+        emptyState="No applications currently in App Verification or Credit Underwriting."
+        applications={queue}
+        borrowersById={borrowersById}
+        kpis={[
+          { label: "In App Verification", value: inAV },
+          { label: "In Credit Underwriting", value: inCU },
+          { label: "Total queue", value: queue.length },
+          {
+            label: "Total $ in queue",
+            value: `$${totalRequested.toLocaleString("en-CA")}`,
+          },
         ]}
       />
 
       <StubBanner
-        pr="PR #3"
-        description="Verifications tab — Credit Report, Bank Verification, and Application Verification checks. Modeled as parallel/repeatable checks (not strict sequential states)."
+        pr="PR #4"
+        description="Risk Score tab — composite score from Equifax bureau pull + bank-statement signals + application data. Per-rule pass/fail and Risk Ranking (Excellent | Good | Average | Weak | Poor)."
         fields={[
-          "Credit Bureau pull (Equifax) — status, pulled-at, score",
-          "Bank Verification (Flinks) — institution, accounts, last sync",
-          "Application Verification — ID match, address match, employment confirmation",
-          "Re-run check button (audit-logged)",
+          "Composite risk score + ranking",
+          "System recommendation (Approve | Decline | Refer) + timestamp",
+          "Underwriter decision (manual override) + timestamp + reason",
+          "Application Check sub-score",
+          "Anti-Fraud / Geolocation / Cybersecurity check results",
+          "Bank Account Check / sub-score (Flinks-derived)",
+          "Credit Bureau Check / score (Equifax)",
           "Underwriting Rules engine results",
+          "Re-score action (audit-logged)",
+          "Toggle: count credit bureau / bank-account scoring per applicant",
+        ]}
+      />
+
+      <StubBanner
+        pr="PR #4"
+        description="Verifications tab — KYC + financial verification with predetermined sources. Each element listed with the source(s) used to verify and a timestamp; manual-review flagging where automated verification is insufficient."
+        fields={[
+          "Borrower Name — verified by ID + Bank verification",
+          "Address / Phone / Email — cross-reference across sources",
+          "Employer / Income — paystub + bank-deposit pattern",
+          "ID document — validity + expiry + photo match",
+          "Manual review flag with reason",
+          "Re-run verification action (audit-logged)",
         ]}
       />
     </div>
