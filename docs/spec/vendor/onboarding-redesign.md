@@ -5,6 +5,8 @@
 > - `onboarding-process-current.pdf` — today's 11-step manual ~2-week process
 > - `vendor-application-form.pdf` — current paper application
 > - `master-services-agreement-sample.pdf` — current MSA template
+> - `vendor-setup-example-elevation-dental.docx` — internal setup checklist used for the most recent onboarded vendor (BC1180 / Elevation Dental)
+> - `setup-example-notes.md` — operational ground-truth callouts pulled from the example (promo-code convention, Test/Live promotion, multi-session training, MSA sub-events, vendor-branded templating)
 
 ## Direction from David
 

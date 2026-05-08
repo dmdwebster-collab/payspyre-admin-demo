@@ -172,6 +172,55 @@ export default function VendorOnboardingPage() {
 
       <Card>
         <CardHeader>
+          <CardTitle>Operational items pulled forward into PR #2</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-[12px] text-ink-dim mb-3">
+            Captured from the real onboarding checklist used for BC1180
+            (Elevation Dental). See{" "}
+            <code className="font-mono text-[11px]">
+              docs/spec/vendor/setup-example-notes.md
+            </code>
+            .
+          </p>
+          <ul className="grid grid-cols-1 gap-y-1 text-[12px] text-ink-dim list-disc pl-5">
+            <li>
+              Vendor-scoped promo codes (56 per vendor: 14 slots × 4
+              frequencies). Format{" "}
+              <code className="font-mono">{`{VENDOR_ID}-{B|M|S|W}{00–13}`}</code>
+              . Auto-provisioned on PROVISIONING.
+            </li>
+            <li>
+              UAT vs Live environment promotion —{" "}
+              <code className="font-mono">environment</code> marker on Vendor
+              and onboarding events; same state machine walked twice (test
+              first, then live).
+            </li>
+            <li>
+              MSA three sub-events recorded under MSA_SENT → MSA_SIGNED:{" "}
+              <code className="font-mono">msa_created</code>,{" "}
+              <code className="font-mono">msa_vendor_signed</code>,{" "}
+              <code className="font-mono">msa_countersigned</code>.
+            </li>
+            <li>
+              Multi-session TRAINING (default 2 sessions) tracked via
+              repeated <code className="font-mono">training_session_held</code>
+              {" "}events.
+            </li>
+            <li>
+              Vendor-branded loan agreement + finance calculator templating
+              inside PROVISIONING.
+            </li>
+            <li>
+              Per-director photo ID upload (one document per beneficial-owner
+              row) for KYC.
+            </li>
+          </ul>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
           <CardTitle>Open questions for PR #2 build</CardTitle>
         </CardHeader>
         <CardContent>

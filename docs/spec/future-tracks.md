@@ -13,6 +13,9 @@ PR #3)** but is captured here so nothing gets lost. Sources:
   and the Resources / training-platform direction
 - `PaySpyre-Development-Video-Series.docx` — planned 25-video onboarding
   / training library
+- `vendor-setup-example-elevation-dental.docx` — internal setup checklist
+  used today for BC1180 (Elevation Dental). Operational ground-truth
+  callouts written up in `docs/spec/vendor/setup-example-notes.md`.
 
 Some of this language reflects pain points on the **current TurnKey
 platform**, not the system being rebuilt here. Treat as context and design
