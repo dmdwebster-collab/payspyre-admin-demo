@@ -1,4 +1,17 @@
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { StubBanner } from "@/components/ui/stub-banner";
+
+const INTEGRATIONS = [
+  { name: "Equifax Canada", role: "Credit bureau", status: "Active" },
+  { name: "Flinks Capital", role: "Bank verification", status: "Active" },
+  { name: "Zum Rails", role: "EFT / payments", status: "Active" },
+  { name: "SignNow", role: "E-signature", status: "Active" },
+  { name: "SendGrid", role: "Transactional email", status: "Active" },
+  { name: "MessageBird", role: "SMS", status: "Inactive" },
+  { name: "Walnut", role: "Credit insurance", status: "Active" },
+  { name: "Trulioo / Persona", role: "KYC / KYB / ID", status: "Under evaluation" },
+];
 
 export default function SettingsPage() {
   return (
@@ -14,8 +27,48 @@ export default function SettingsPage() {
         </p>
       </header>
 
+      <Card>
+        <CardHeader>
+          <CardTitle>Integrations — current connections</CardTitle>
+        </CardHeader>
+        <CardContent className="p-0">
+          <table className="w-full text-sm">
+            <thead className="border-b bg-muted/30">
+              <tr className="text-left text-xs text-muted-foreground">
+                <th className="px-4 py-2 font-medium">Service</th>
+                <th className="px-4 py-2 font-medium">Role</th>
+                <th className="px-4 py-2 font-medium">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {INTEGRATIONS.map((i) => (
+                <tr key={i.name} className="border-b last:border-b-0">
+                  <td className="px-4 py-2 font-medium">{i.name}</td>
+                  <td className="px-4 py-2 text-xs text-muted-foreground">
+                    {i.role}
+                  </td>
+                  <td className="px-4 py-2">
+                    <Badge
+                      variant={
+                        i.status === "Active"
+                          ? "active"
+                          : i.status === "Inactive"
+                          ? "muted"
+                          : "renewed"
+                      }
+                    >
+                      {i.status}
+                    </Badge>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </CardContent>
+      </Card>
+
       <StubBanner
-        pr="PR #3"
+        pr="PR #4"
         description="Accounts — user management with role-based access (Admin, Underwriter, Servicer, Collector, Vendor, Read-only)."
         fields={[
           "Invite user (email)",
@@ -28,31 +81,24 @@ export default function SettingsPage() {
       />
 
       <StubBanner
-        pr="PR #3"
-        description="Company Settings — legal entity, branding, and provincial scope."
+        pr="PR #4"
+        description="Company Settings — legal entity, branding, and provincial scope. Province settings carry hardcoded compliance guardrails (APR limit, NSF charge, retention period) sourced from each province's consumer-protection acts."
         fields={[
-          "Legal name / DBA",
+          "Brand: company name / legal name / DBA / address / city / province / country / phone / website / email",
+          "Lending type / Foundation date / Logo / Favicon",
+          "Province scope (BC, AB) + per-province APR cap, NSF charge, retention",
           "FINTRAC MSB # (if applicable)",
-          "Logo / brand colors",
-          "Province settings (BC, AB)",
           "Cost-of-credit disclosure templates",
           "Statement templates",
         ]}
       />
 
       <StubBanner
-        pr="PR #3"
-        description="Integrations — credentials and toggles for every external service. Existing relationships from the TurnKey deployment carry over (David, PR #1 review)."
+        pr="PR #4"
+        description="Integrations config — credentials, webhook secrets, and toggle switches. The table above is read-only; this stub will gate behind elevated permission for actual key management."
         fields={[
-          "Equifax Canada (credit bureau)",
-          "Flinks Capital (instant bank verification)",
-          "Zum Rails (EFT / payment processing)",
-          "SignNow (e-signature)",
-          "SendGrid (transactional email)",
-          "MessageBird (SMS — not actively used yet)",
-          "Walnut (creditor / credit insurance)",
-          "KYC / KYB / ID Verification — TBD (Trulioo + Persona under evaluation)",
-          "Webhook secrets / signing keys",
+          "API keys + webhook secrets per service",
+          "Connection-test action (audit-logged)",
           "Future: Equifax PPSA Connect (lien registration)",
           "Future: Equifax Credit Monitoring API (customer-facing)",
           "Future: Zum Rails Card Issuance (secured cards)",
@@ -60,7 +106,7 @@ export default function SettingsPage() {
       />
 
       <StubBanner
-        pr="PR #3"
+        pr="PR #4"
         description="Loan Settings — global standardized credit-product catalog (not customized per vendor). Each product carries its own verification requirements and reuse windows. Per David's PR #1.2 input, vendor-level product customization is dropped — every vendor presents the same standardized offerings."
         fields={[
           "Credit products (per CreditProduct in lib/types/credit-product.ts) — global, not per-vendor",
@@ -80,7 +126,7 @@ export default function SettingsPage() {
       />
 
       <StubBanner
-        pr="PR #3"
+        pr="PR #4"
         description="Decision Engine — scorecard rules and auto-decision thresholds. Default scorecard required at launch."
         fields={[
           "Bureau-score cutoffs per tier",
@@ -93,12 +139,12 @@ export default function SettingsPage() {
       />
 
       <StubBanner
-        pr="PR #3"
+        pr="PR #4"
         description="Notifications — internal + borrower-facing message templates and triggers."
         fields={[
           "Status-change triggers",
-          "Email templates",
-          "SMS templates",
+          "Email templates (SendGrid)",
+          "SMS templates (MessageBird)",
           "Internal Slack / webhook routing",
           "Borrower opt-in / opt-out",
         ]}
