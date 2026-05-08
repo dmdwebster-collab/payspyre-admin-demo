@@ -25,28 +25,56 @@ work surfaces tied to the Application / Loan lifecycle).
 | **Archive**      | `/archive`        | PR #3    | Read-only closed records (Paid / Refinanced / Charged-off / Declined / Withdrawn)                                                                     |
 | **Settings**     | `/settings`       | PR #3    | Accounts, Company Settings, Integrations, Loan Settings, Decision Engine, Notifications                                                               |
 
-## Application Status Flow (live in PR #1)
+## Application Status Flow (live in PR #1, refined in PR #1.1)
 
 State machine in `lib/status-flow.ts`. 10 stages from David's status-flow PDF.
 
 ```
-APPLICATION_STARTED
-  → APPLICATION_SUBMITTED
+PRE_ORIGINATION
+  → ORIGINATION
     → CREDIT_UNDERWRITING
-      ↳ CREDIT_REPORT          (parallel, repeatable)
-      ↳ BANK_VERIFICATION      (parallel, repeatable)
-      ↳ APPLICATION_VERIFICATION (parallel, repeatable)
-    → DECISION
-      → APPROVED → FUNDED
-      → DECLINED
-      → REFERRED → CREDIT_UNDERWRITING (loop)
+      ↳ CREDIT_REPORT       (independent of bank verification, reusable within window)
+      ↳ BANK_VERIFICATION   (independent of credit report,    reusable within window)
+      ↳ APPLICATION_VERIFICATION (depends on fresh Credit Report + Bank Verification)
+      → OFFER_ACCEPTANCE → AGREEMENT_SIGNATURE → APPROVED → ACTIVE
+      → REJECTED
+      → (return) → ORIGINATION
+  → CANCELLED   (from any pre-active state)
+  → CLOSED      (from ACTIVE: repaid / renewed / refinanced / transferred / settlement / write-off)
 ```
 
-**Design note:** stages 3/4/5 (Credit Report, Bank Verification, Application
-Verification) are modeled as **parallel checks reachable from
-CREDIT_UNDERWRITING** rather than strict sequential states, because the spec
-PDF says they "may be performed at different steps … before approval." Flag
-for David's confirmation.
+**Stage dependencies (per David's PR #1 reply):**
+
+- Stages 3 (Credit Report) and 4 (Bank Verification) are **independent** of
+  each other — either order, or concurrent.
+- Stage 5 (Application Verification) **depends on data from** stages 3 + 4,
+  so it can only begin once both have valid (unexpired) results.
+- For products with `requires_credit_bureau = false`, stage 3 is skipped
+  and stage 5 only requires fresh Bank Verification.
+
+**Reuse / freshness model:**
+
+- Each check carries its own `*_completed_at` timestamp on `Application`.
+- Validity windows are configured per `CreditProduct`
+  (`credit_report_validity_days`, `bank_verification_validity_days` —
+  default 30 days each, applied independently).
+- If a check is still fresh, the system reuses the existing data rather
+  than initiating a new pull.
+- `executeAction(app, "approve", actor, product)` enforces these
+  preconditions (raises `PreconditionError` if any required check is
+  missing or stale).
+- The same freshness helpers (`isCheckFresh`, `checkActionPreconditions`)
+  are reused for **post-booking re-pulls** (collections, re-verification,
+  portfolio monitoring).
+
+**Per-product toggles on `CreditProduct`:**
+
+- `requires_credit_bureau` (On / Off)
+- `requires_bank_verification` (On / Off)
+- `credit_report_validity_days`
+- `bank_verification_validity_days`
+- `post_booking_credit_repull_days` (optional)
+- `post_booking_bank_repull_days` (optional)
 
 ## Data model surface (PR #1)
 
