@@ -128,7 +128,21 @@ app/                # Next.js App Router routes
   accounts/         # All loans
   vendors/          # Vendor portfolio
   performance/      # Origination trend
-  originations/     # PR #2 stub
+  originations/
+    page.tsx          # Worklist — funnel KPI strip + filterable table
+    [applicationId]/  # Loan Header (10 tabs)
+      layout.tsx      # Sticky borrower / vendor / status header + tab nav
+      page.tsx        # Index → redirects to summary
+      summary/        # Application detail + Status Flow action panel
+      customer-details/  # PR #2 in-progress stub
+      co-borrower/    # PR #2 in-progress stub
+      bank-details/   # PR #2 in-progress stub
+      initial-schedule/  # PR #2 in-progress stub
+      workflow/       # Append-only audit log (built)
+      contacts/       # PR #2 in-progress stub
+      documents/      # PR #2 in-progress stub
+      bank-statements/  # PR #2 in-progress stub
+      comments/       # PR #2 in-progress stub
   vendor-onboarding/ # PR #1.2 stub
   underwriting/     # PR #3 stub
   servicing/        # PR #3 stub
