@@ -75,6 +75,33 @@ create table if not exists borrowers (
 );
 
 -- Applications drive the Status Flow state machine (lib/status-flow.ts)
+-- Credit products: per-product config including verification toggles + reuse windows.
+-- Per David's PR #1 reply: "Certain credit products may not require a credit
+-- bureau at all" → requires_credit_bureau On/Off. Validity windows apply
+-- independently and default to 30 days; if a fresh result already exists,
+-- the system reuses it rather than initiating a new pull.
+create table if not exists credit_products (
+  id text primary key,
+  code text not null unique,
+  name text not null,
+  active boolean not null default true,
+  provinces text[] not null,
+  min_amount numeric(12,2) not null check (min_amount >= 0),
+  max_amount numeric(12,2) not null check (max_amount >= 0),
+  min_term_months integer not null check (min_term_months > 0),
+  max_term_months integer not null check (max_term_months > 0),
+  base_rate numeric(6,3) not null check (base_rate >= 0),
+  origination_fee_pct numeric(6,3) not null default 0 check (origination_fee_pct >= 0),
+  requires_credit_bureau boolean not null default true,
+  requires_bank_verification boolean not null default true,
+  credit_report_validity_days integer not null default 30 check (credit_report_validity_days > 0),
+  bank_verification_validity_days integer not null default 30 check (bank_verification_validity_days > 0),
+  post_booking_credit_repull_days integer check (post_booking_credit_repull_days is null or post_booking_credit_repull_days > 0),
+  post_booking_bank_repull_days integer check (post_booking_bank_repull_days is null or post_booking_bank_repull_days > 0),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
 create table if not exists applications (
   id text primary key, -- e.g. APP-2026-00042
   application_number text not null unique,
@@ -89,7 +116,7 @@ create table if not exists applications (
   province text not null check (province in ('BC','AB')),
   primary_borrower_id uuid references borrowers(id),
   co_borrower_id uuid references borrowers(id),
-  credit_product_id text,
+  credit_product_id text references credit_products(id),
   requested_amount numeric(12,2) not null check (requested_amount >= 0),
   offer_amount numeric(12,2),
   term_months integer,
@@ -97,6 +124,11 @@ create table if not exists applications (
   payment_frequency text check (payment_frequency in ('Weekly','BiWeekly','SemiMonthly','Monthly')),
   start_date date,
   first_payment_date date,
+  -- Verification freshness (per David's PR #1 reply). Each check has its own
+  -- "last completed at" timestamp; freshness is evaluated per credit product.
+  credit_report_completed_at timestamptz,
+  bank_verification_completed_at timestamptz,
+  application_verification_completed_at timestamptz,
   created_by text,
   created_at timestamptz not null default now(),
   submitted_at timestamptz,
