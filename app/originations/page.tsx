@@ -144,7 +144,7 @@ export default function OriginationsPage() {
           "Document type",
           "File name / version",
           "Uploaded by / date",
-          "DocuSign envelope status",
+          "SignNow envelope status",
           "Download / preview",
         ]}
       />
