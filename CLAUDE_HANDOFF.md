@@ -80,25 +80,26 @@ See §7 below for the revised PR ladder reflecting cutover priorities.
 | (hotfix) | `hotfix/pr5-missing-data-accessors` | [#11](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/11) | **Merged to main** — recovered two PR #5 prep commits dropped during the squash sequence |
 | PR #3 | `redesign/section-stubs-pr3` | [#6](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/6) | **Merged to main** — 6 sections scaffolded |
 | PR #3.1 | `redesign/credit-product-refactor-pr3-1` | [#7](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/7) | **Merged to main** — credit product refactor: brackets + multi-frequency |
-| PR #4.1 | `redesign/servicing-data-model-pr4-1` | [#8](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/8) | Open as draft (rebased onto new main) — Servicing data model |
-| PR #4.2 | `redesign/turnkey-export-adapter-pr4-2` | [#9](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/9) | Open as draft (rebased onto PR #4.1) — TurnKey export adapter |
-| **PR #4.3** | **`redesign/servicing-workplace-pr4-3`** | _open in this PR_ | **In progress** — Servicing workplace shell + Schedule viewer + Payments/NSF list views |
+| PR #4.1 | `redesign/servicing-data-model-pr4-1` | [#8](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/8) | **Merged to main** — Servicing data model |
+| PR #4.2 | `redesign/turnkey-export-adapter-pr4-2` | [#9](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/9) | **Merged to main** — TurnKey export adapter |
+| PR #4.3 | `redesign/servicing-workplace-pr4-3` | [#12](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/12) | **Merged to main** — Servicing workplace shell + Schedule viewer |
+| **PR #4.4** | **`redesign/collections-workplace-pr4-4`** | _open in this PR_ | **In progress** — Collections workplace: NSF-event-driven queue + DPD bucketing |
 
-PRs #1 → #3.1 + the hotfix are squashed onto main. PRs #4.x are still draft-stacked.
+PRs #1 → #4.3 are all squashed onto main. PR #4.4 branches directly off main (no longer stacked on a draft).
 
 ---
 
 ## 4. Where you are right now
 
-**Current branch:** `redesign/servicing-workplace-pr4-3`
-**Stacked on:** `redesign/turnkey-export-adapter-pr4-2`
-**Tests:** 148/148 passing (no new vitest files in this PR — all UI)
+**Current branch:** `redesign/collections-workplace-pr4-4`
+**Stacked on:** `main`
+**Tests:** 158/158 passing (8 vitest files — adds `lib/collections.test.ts`)
 **Build:** `npm run build` clean
 
-PRs #2 → #7 + the hotfix #11 now on main. The credit-product schema
-shipped, not just design-locked. PR #4.1 / #4.2 are still draft-stacked
-above PR #3.1 (now main); PR #4.3 wraps the first real Servicing UI tab.
-Next up: PR #4.4 (Collections workflow on top of the PR #4.3 NSF list).
+PRs #2 → #4.3 + the hotfix #11 are all on main. This PR rewrites
+`/collections` from PR #3's mock-DPD-on-applications stub to a real
+NSF-event-driven queue with bucket KPIs. Next up: PR #4.4.x (the action
+workflow — retry / PTP / resolution).
 
 ---
 
