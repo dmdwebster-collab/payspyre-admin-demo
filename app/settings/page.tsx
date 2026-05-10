@@ -105,27 +105,18 @@ export default function SettingsPage() {
         ]}
       />
 
-      <StubBanner
-        pr="PR #4"
-        description="Loan Settings — global standardized credit-product catalog (not customized per vendor). Per David's PR #3.1 direction, each product is a single intelligently configurable framework with multi-frequency support and bracketed amount / term / rate bands — replacing TurnKey's pattern of cloning a product per frequency or per term ceiling. Per David's PR #1.2 input, vendor-level product customization is dropped — every vendor presents the same standardized offerings."
-        fields={[
-          "Credit products (per CreditProduct in lib/types/credit-product.ts) — global, not per-vendor",
-          "Permitted payment frequencies (Weekly / BiWeekly / SemiMonthly / Monthly) — multiple per product",
-          "Amount brackets — non-overlapping principal ranges per product",
-          "Per-bracket term bands (one or more, e.g. 6–36 mo for small loans, 24–84 mo for large)",
-          "Per-bracket rate band (min / default / max APR)",
-          "Origination fee schedule (product-level)",
-          "NSF fee",
-          "Late fee",
-          "DSI day-count (360 default)",
-          "Requires credit bureau (On / Off per product)",
-          "Requires bank verification (On / Off per product)",
-          "Credit Report validity window (days, default 30)",
-          "Bank Verification validity window (days, default 30)",
-          "Post-booking re-pull cadence (collections / portfolio review)",
-          "Bracket-level disclosure / document templates (deferred — see docs/spec/credit-product-architecture.md §6)",
-        ]}
-      />
+      <a
+        href="/settings/products"
+        className="block rounded-lg border border-gold-dim/40 bg-navy-700/40 p-4 text-sm text-ink-dim hover:border-gold-dim hover:bg-navy-700"
+      >
+        <div className="text-[11px] font-semibold tracking-wider text-gold uppercase mb-1">
+          PR #4.5 · Loan Settings — Credit products (live)
+        </div>
+        Read-only viewer of the global credit-product catalog. Surfaces
+        the bracket model from PR #3.1 (multi-frequency, non-overlapping
+        amount brackets, per-bracket term bands + rate bands). Editor
+        lands in PR #4.5.x.
+      </a>
 
       <StubBanner
         pr="PR #4"

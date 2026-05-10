@@ -17,6 +17,7 @@ import paymentSchedulesJson from "./fixtures/payment_schedules.json";
 import paymentScheduleEntriesJson from "./fixtures/payment_schedule_entries.json";
 import paymentsJson from "./fixtures/payments.json";
 import nsfEventsJson from "./fixtures/nsf_events.json";
+import creditProductsJson from "./fixtures/credit_products.json";
 import type { Loan } from "../types/loan";
 import type { Vendor } from "../types/vendor";
 import type { Application, ApplicationStatusEvent } from "../types/application";
@@ -27,6 +28,7 @@ import type {
 } from "../types/payment-schedule";
 import type { Payment } from "../types/payment";
 import type { NSFEvent } from "../types/nsf-event";
+import type { CreditProduct } from "../types/credit-product";
 
 // Cast JSON imports to typed arrays. The fixtures are derived from the
 // legacy v1 dataset and conform to the schemas in lib/types/.
@@ -47,6 +49,10 @@ const PAYMENT_SCHEDULE_ENTRIES =
   paymentScheduleEntriesJson as unknown as PaymentScheduleEntry[];
 const PAYMENTS = paymentsJson as unknown as Payment[];
 const NSF_EVENTS = nsfEventsJson as unknown as NSFEvent[];
+
+// PR #4.5 — Credit products fixture. Single launch product (Dental Patient
+// Financing) configured with the bracket model from PR #3.1.
+const CREDIT_PRODUCTS = creditProductsJson as unknown as CreditProduct[];
 
 export interface PortfolioKpis {
   summary: Record<string, number>;
@@ -179,5 +185,14 @@ export const repository = {
   },
   async getPayment(id: string): Promise<Payment | undefined> {
     return PAYMENTS.find((p) => p.id === id);
+  },
+
+  // -- Credit products (Loan Settings, PR #4.5) --------------------------
+
+  async listCreditProducts(): Promise<CreditProduct[]> {
+    return CREDIT_PRODUCTS;
+  },
+  async getCreditProduct(id: string): Promise<CreditProduct | undefined> {
+    return CREDIT_PRODUCTS.find((p) => p.id === id || p.code === id);
   },
 };

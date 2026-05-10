@@ -8,7 +8,10 @@ interface StubBannerProps {
     | "PR #4"
     | "PR #4.4"
     | "PR #4.5"
+    | "PR #4.5.1"
+    | "PR #4.5.2"
     | "PR #4.6"
+    | "PR #4.8"
     | "PR #5";
   description: string;
   fields?: string[];

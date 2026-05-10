@@ -54,6 +54,24 @@ export default async function UnderwritingPage() {
         ]}
       />
 
+      {queue.length > 0 && (
+        <a
+          href={`/underwriting/${queue[0].id}/decision`}
+          className="block rounded-lg border border-gold-dim/40 bg-navy-700/40 p-4 text-sm text-ink-dim hover:border-gold-dim hover:bg-navy-700"
+        >
+          <div className="text-[11px] font-semibold tracking-wider text-gold uppercase mb-1">
+            PR #4.5 · Underwriting Loan view (live)
+          </div>
+          Open the first queue item{" "}
+          <span className="font-mono text-gold">
+            {queue[0].application_number}
+          </span>{" "}
+          → Decision / Bureau / Bank / Verification / Notes. Decision tab
+          shows offer summary, freshness state per check, and available
+          state-machine actions (read-only).
+        </a>
+      )}
+
       <StubBanner
         pr="PR #4"
         description="Risk Score tab — composite score from Equifax bureau pull + bank-statement signals + application data. Per-rule pass/fail and Risk Ranking (Excellent | Good | Average | Weak | Poor)."
