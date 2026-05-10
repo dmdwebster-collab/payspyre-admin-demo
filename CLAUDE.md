@@ -147,10 +147,17 @@ Carryovers from the existing TurnKey deployment are marked **(existing)**.
   Activity tab is a stub pointing at PR #4.6. The `/servicing` worklist
   exposes a demo link into `PS-SAMPLE-001` since the legacy v1 loans
   have no schedules yet.
-- **PR #4.4+ (workplace build-out):** Collections workflow (NSF retry,
-  PTP, queue), Underwriting workplace, Loan Settings editor, Reports
-  / reconciliation, Integration cutover, Decision Engine. Each fills
-  in remaining `StubBanner` placeholders.
+- **PR #4.4 (Collections workplace — NSF queue):** rewrites
+  `/collections` from PR #3's mock-DPD-on-applications stub to a real
+  NSF-event-driven queue. Pure helpers in `lib/collections.ts`
+  (`daysSince`, `dpdBucket`, `collectionsQueueFromNSF`, `bucketCounts`,
+  `totalNSFFees`) drive bucket KPIs (0-29 / 30-59 / 60-89 / 90+) and a
+  sorted worklist (oldest first). Each row links to the Servicing NSF
+  tab. Action workflow (retry / PTP capture / resolution) follows in a
+  PR #4.4.x stub.
+- **PR #4.5+ (workplace build-out):** Underwriting workplace, Loan
+  Settings editor, Reports / reconciliation, Integration cutover,
+  Decision Engine. Each fills in remaining `StubBanner` placeholders.
 
 ### Future tracks (not in PR #1–#3)
 
