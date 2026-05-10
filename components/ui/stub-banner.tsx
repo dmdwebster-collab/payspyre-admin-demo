@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 
 interface StubBannerProps {
-  pr: "PR #1.2" | "PR #2" | "PR #3";
+  pr: "PR #1.2" | "PR #2" | "PR #3" | "PR #4" | "PR #5";
   description: string;
   fields?: string[];
   className?: string;

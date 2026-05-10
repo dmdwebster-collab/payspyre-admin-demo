@@ -9,7 +9,13 @@ interface NavItem {
   label: string;
   href: string;
   icon: string;
-  status?: "live" | "pr1_2" | "pr2" | "pr2_partial" | "pr3";
+  status?:
+    | "live"
+    | "pr1_2"
+    | "pr2"
+    | "pr2_partial"
+    | "pr3"
+    | "pr3_scaffolded";
 }
 
 const NAV_ITEMS: NavItem[] = [
@@ -22,12 +28,12 @@ const NAV_ITEMS: NavItem[] = [
 const WORKPLACE_ITEMS: NavItem[] = [
   { label: "Vendor Onboarding", href: "/vendor-onboarding", icon: "◆", status: "pr1_2" },
   { label: "Originations", href: "/originations", icon: "✎", status: "pr2" },
-  { label: "Underwriting", href: "/underwriting", icon: "✓", status: "pr3" },
-  { label: "Servicing", href: "/servicing", icon: "⟳", status: "pr3" },
-  { label: "Collections", href: "/collections", icon: "!", status: "pr3" },
-  { label: "Reports", href: "/reports", icon: "▦", status: "pr3" },
-  { label: "Archive", href: "/archive", icon: "▣", status: "pr3" },
-  { label: "Settings", href: "/settings", icon: "⚙", status: "pr3" },
+  { label: "Underwriting", href: "/underwriting", icon: "✓", status: "pr3_scaffolded" },
+  { label: "Servicing", href: "/servicing", icon: "⟳", status: "pr3_scaffolded" },
+  { label: "Collections", href: "/collections", icon: "!", status: "pr3_scaffolded" },
+  { label: "Reports", href: "/reports", icon: "▦", status: "pr3_scaffolded" },
+  { label: "Archive", href: "/archive", icon: "▣", status: "pr3_scaffolded" },
+  { label: "Settings", href: "/settings", icon: "⚙", status: "pr3_scaffolded" },
 ];
 
 function StatusTag({ status }: { status?: NavItem["status"] }) {
@@ -39,7 +45,9 @@ function StatusTag({ status }: { status?: NavItem["status"] }) {
         ? "PR #2"
         : status === "pr2_partial"
           ? "PR #2 · partial"
-          : "PR #3";
+          : status === "pr3_scaffolded"
+            ? "PR #3 · scaffolded"
+            : "PR #3";
   return (
     <span className="ml-auto text-[9px] font-semibold tracking-wider text-gold-dim border border-line rounded px-1.5 py-px">
       {label}

@@ -91,6 +91,9 @@ export const repository = {
   async getBorrower(id: string): Promise<Borrower | undefined> {
     return BORROWERS.find((b) => b.id === id);
   },
+  async listBorrowers(): Promise<Borrower[]> {
+    return BORROWERS;
+  },
   async getBorrowersForApplication(
     application_id: string,
   ): Promise<{ primary?: Borrower; co?: Borrower }> {
