@@ -138,10 +138,19 @@ Carryovers from the existing TurnKey deployment are marked **(existing)**.
   and money totals. Transport/parser + DB upsert + cutover dashboards
   intentionally out of scope (see `docs/spec/turnkey-migration.md` §3
   for the open questions that gate them).
-- **PR #4.3+ (workplace build-out):** flesh out the actual tab UIs in
-  Servicing, Collections, Underwriting, Reports, Archive, and Settings
-  (every `StubBanner` becomes a real tab). Now unblocked by the PR #4.1
-  data model + PR #4.2 migration runner.
+- **PR #4.3 (Servicing workplace shell + Schedule viewer):** new route
+  `/servicing/[loanId]/{schedule,payments,nsf,activity}` with a sticky
+  Loan Header + tab nav. Schedule tab fully implemented against the
+  PR #4.1 data model (PaymentSchedule + entries + `markMissedEntries` +
+  `nextDueEntry`). Payments and NSF tabs render real lists from the
+  fixtures with operator-action StubBanners pointing at PR #4.4.
+  Activity tab is a stub pointing at PR #4.6. The `/servicing` worklist
+  exposes a demo link into `PS-SAMPLE-001` since the legacy v1 loans
+  have no schedules yet.
+- **PR #4.4+ (workplace build-out):** Collections workflow (NSF retry,
+  PTP, queue), Underwriting workplace, Loan Settings editor, Reports
+  / reconciliation, Integration cutover, Decision Engine. Each fills
+  in remaining `StubBanner` placeholders.
 
 ### Future tracks (not in PR #1–#3)
 

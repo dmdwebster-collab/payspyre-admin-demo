@@ -73,30 +73,32 @@ See §7 below for the revised PR ladder reflecting cutover priorities.
 
 | PR | Branch | GitHub | Status |
 |---|---|---|---|
-| PR #1 | `redesign/foundation-pr1` | [#2](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/2) | Complete — Next.js migration + data model + Status Flow + spec docs |
-| PR #1.1 | `redesign/foundation-pr1-1-patch` | [#3](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/3) | Complete — status flow dependencies + freshness windows + integration corrections |
-| PR #1.2 | `redesign/vendor-onboarding-pr1-2` | [#4](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/4) | Complete — vendor onboarding scaffolding + standardized credit products (no per-vendor customization) |
-| PR #2 | `redesign/originations-pr2` | [#5](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/5) | Complete — Originations workplace end-to-end (worklist + Loan Header + all 10 tabs) |
-| PR #3 | `redesign/section-stubs-pr3` | [#6](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/6) | Complete — 6 sections scaffolded (Underwriting / Servicing / Collections / Reports / Archive / Settings) with worklist previews + StubBanner placeholders |
-| PR #3.1 | `redesign/credit-product-refactor-pr3-1` | [#7](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/7) | Open as draft (David design-locked per §10) — credit product refactor: brackets + multi-frequency |
-| PR #4.1 | `redesign/servicing-data-model-pr4-1` | [#8](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/8) | Open as draft — Servicing data model: PaymentSchedule, PaymentScheduleEntry, Payment, NSFEvent |
-| **PR #4.2** | **`redesign/turnkey-export-adapter-pr4-2`** | _open in this PR_ | **In progress** — TurnKey export adapter: per-entity adapters, deterministic UUIDv5 ids, schedule strategies, reconciliation report |
+| PR #1 | `redesign/foundation-pr1` | [#2](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/2) | **Merged to main** — Next.js migration + data model + Status Flow + spec docs |
+| PR #1.1 | `redesign/foundation-pr1-1-patch` | [#3](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/3) | Closed (content delivered via PR #4 squash) — status flow dependencies + freshness windows |
+| PR #1.2 | `redesign/vendor-onboarding-pr1-2` | [#4](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/4) | **Merged to main** — vendor onboarding (also includes PR #1.1's content) |
+| PR #2 | `redesign/originations-pr2` | [#5](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/5) | **Merged to main** — Originations workplace end-to-end |
+| (hotfix) | `hotfix/pr5-missing-data-accessors` | [#11](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/11) | **Merged to main** — recovered two PR #5 prep commits dropped during the squash sequence |
+| PR #3 | `redesign/section-stubs-pr3` | [#6](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/6) | **Merged to main** — 6 sections scaffolded |
+| PR #3.1 | `redesign/credit-product-refactor-pr3-1` | [#7](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/7) | **Merged to main** — credit product refactor: brackets + multi-frequency |
+| PR #4.1 | `redesign/servicing-data-model-pr4-1` | [#8](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/8) | Open as draft (rebased onto new main) — Servicing data model |
+| PR #4.2 | `redesign/turnkey-export-adapter-pr4-2` | [#9](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/9) | Open as draft (rebased onto PR #4.1) — TurnKey export adapter |
+| **PR #4.3** | **`redesign/servicing-workplace-pr4-3`** | _open in this PR_ | **In progress** — Servicing workplace shell + Schedule viewer + Payments/NSF list views |
 
-Each PR is stacked: `--base` of the next branch is the previous branch.
+PRs #1 → #3.1 + the hotfix are squashed onto main. PRs #4.x are still draft-stacked.
 
 ---
 
 ## 4. Where you are right now
 
-**Current branch:** `redesign/turnkey-export-adapter-pr4-2`
-**Stacked on:** `redesign/servicing-data-model-pr4-1`
-**Tests:** 148/148 passing (7 vitest files — adds `lib/migration/turnkey-import.test.ts`)
+**Current branch:** `redesign/servicing-workplace-pr4-3`
+**Stacked on:** `redesign/turnkey-export-adapter-pr4-2`
+**Tests:** 148/148 passing (no new vitest files in this PR — all UI)
 **Build:** `npm run build` clean
 
-**PR #3.1 is in David's court but design-locked** per §10. PR #4.1 (#8)
-landed the Servicing data model; PR #4.2 (this PR) wraps the TurnKey
-migration runner. Next up: PR #4.3 (Servicing workplace) — UI on top of
-PR #4.1.
+PRs #2 → #7 + the hotfix #11 now on main. The credit-product schema
+shipped, not just design-locked. PR #4.1 / #4.2 are still draft-stacked
+above PR #3.1 (now main); PR #4.3 wraps the first real Servicing UI tab.
+Next up: PR #4.4 (Collections workflow on top of the PR #4.3 NSF list).
 
 ---
 
