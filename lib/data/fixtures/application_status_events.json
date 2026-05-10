@@ -1,0 +1,1292 @@
+[
+  {
+    "id": "63e0e734-696a-4b93-8963-7b0ea85c66c0",
+    "application_id": "APP-2026-00001",
+    "from_status": null,
+    "to_status": "PRE_ORIGINATION",
+    "action": "create",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-05-03T13:00:00.000Z"
+  },
+  {
+    "id": "40f76df1-e2d0-4547-8ca7-63a5ae84cf30",
+    "application_id": "APP-2026-00002",
+    "from_status": null,
+    "to_status": "PRE_ORIGINATION",
+    "action": "create",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-05-08T07:00:00.000Z"
+  },
+  {
+    "id": "ed0a826d-73ee-4303-a443-632d2d47015b",
+    "application_id": "APP-2026-00003",
+    "from_status": null,
+    "to_status": "PRE_ORIGINATION",
+    "action": "create",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-17T17:00:00.000Z"
+  },
+  {
+    "id": "7da98aed-3757-4808-adb3-7d1ac985b5e3",
+    "application_id": "APP-2026-00004",
+    "from_status": null,
+    "to_status": "PRE_ORIGINATION",
+    "action": "create",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-29T14:00:00.000Z"
+  },
+  {
+    "id": "4ac6408f-cfe1-483d-8daa-6f12f9424510",
+    "application_id": "APP-2026-00005",
+    "from_status": null,
+    "to_status": "PRE_ORIGINATION",
+    "action": "create",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-26T04:00:00.000Z"
+  },
+  {
+    "id": "aa2184f9-2de0-40a0-bf24-d253844ac83c",
+    "application_id": "APP-2026-00005",
+    "from_status": "PRE_ORIGINATION",
+    "to_status": "ORIGINATION",
+    "action": "transition",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-26T06:00:00.000Z"
+  },
+  {
+    "id": "a76955ec-3e82-4ff3-b6fb-3f12cf55358a",
+    "application_id": "APP-2026-00006",
+    "from_status": null,
+    "to_status": "PRE_ORIGINATION",
+    "action": "create",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-26T01:00:00.000Z"
+  },
+  {
+    "id": "3e4cbe5f-b2a8-4700-a66c-024a8176731d",
+    "application_id": "APP-2026-00006",
+    "from_status": "PRE_ORIGINATION",
+    "to_status": "ORIGINATION",
+    "action": "transition",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-26T03:00:00.000Z"
+  },
+  {
+    "id": "251a4660-0f00-4aaf-917c-7d9f70cb87ff",
+    "application_id": "APP-2026-00007",
+    "from_status": null,
+    "to_status": "PRE_ORIGINATION",
+    "action": "create",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-05-07T15:00:00.000Z"
+  },
+  {
+    "id": "bb9fb292-15e4-4e2a-a3b1-3fbac5024754",
+    "application_id": "APP-2026-00007",
+    "from_status": "PRE_ORIGINATION",
+    "to_status": "ORIGINATION",
+    "action": "transition",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-05-07T17:00:00.000Z"
+  },
+  {
+    "id": "76b97f39-2b11-401c-a61d-14339aeda7f6",
+    "application_id": "APP-2026-00008",
+    "from_status": null,
+    "to_status": "PRE_ORIGINATION",
+    "action": "create",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-05-04T01:00:00.000Z"
+  },
+  {
+    "id": "c2e5d049-32f9-428d-b032-57a5ee847cd3",
+    "application_id": "APP-2026-00008",
+    "from_status": "PRE_ORIGINATION",
+    "to_status": "ORIGINATION",
+    "action": "transition",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-05-04T03:00:00.000Z"
+  },
+  {
+    "id": "5b0d09ee-7a34-4186-b3b9-c9c7a2a6a1ca",
+    "application_id": "APP-2026-00009",
+    "from_status": null,
+    "to_status": "PRE_ORIGINATION",
+    "action": "create",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-21T08:00:00.000Z"
+  },
+  {
+    "id": "eef19b4b-e11a-42c3-a026-5bdae7922bd8",
+    "application_id": "APP-2026-00009",
+    "from_status": "PRE_ORIGINATION",
+    "to_status": "ORIGINATION",
+    "action": "transition",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-21T10:00:00.000Z"
+  },
+  {
+    "id": "93d22c1a-6f34-4d00-a00c-57e62d46effd",
+    "application_id": "APP-2026-00010",
+    "from_status": null,
+    "to_status": "PRE_ORIGINATION",
+    "action": "create",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-05-01T05:00:00.000Z"
+  },
+  {
+    "id": "3bd2111d-d5f7-4a47-a536-64b3593081aa",
+    "application_id": "APP-2026-00010",
+    "from_status": "PRE_ORIGINATION",
+    "to_status": "ORIGINATION",
+    "action": "transition",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-05-01T07:00:00.000Z"
+  },
+  {
+    "id": "d7580d9e-99f9-4fec-998b-62e9c326892e",
+    "application_id": "APP-2026-00011",
+    "from_status": null,
+    "to_status": "PRE_ORIGINATION",
+    "action": "create",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-05-03T13:00:00.000Z"
+  },
+  {
+    "id": "e49bad09-a38b-4aa3-ac5c-e8ff09f3798c",
+    "application_id": "APP-2026-00011",
+    "from_status": "PRE_ORIGINATION",
+    "to_status": "ORIGINATION",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-05-03T15:00:00.000Z"
+  },
+  {
+    "id": "82a53174-f670-4757-aecd-b4879cd28550",
+    "application_id": "APP-2026-00011",
+    "from_status": "ORIGINATION",
+    "to_status": "CREDIT_REPORT",
+    "action": "transition",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-05-03T17:00:00.000Z"
+  },
+  {
+    "id": "c7a66fc3-d626-4ce8-a796-492bd01492c5",
+    "application_id": "APP-2026-00012",
+    "from_status": null,
+    "to_status": "PRE_ORIGINATION",
+    "action": "create",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-05-05T05:00:00.000Z"
+  },
+  {
+    "id": "fee490d8-4960-492e-857c-b6b639a8d8c9",
+    "application_id": "APP-2026-00012",
+    "from_status": "PRE_ORIGINATION",
+    "to_status": "ORIGINATION",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-05-05T07:00:00.000Z"
+  },
+  {
+    "id": "a8530e03-adba-40fc-9c83-ba0625e1c879",
+    "application_id": "APP-2026-00012",
+    "from_status": "ORIGINATION",
+    "to_status": "CREDIT_REPORT",
+    "action": "transition",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-05-05T09:00:00.000Z"
+  },
+  {
+    "id": "f4b6c2b5-ba34-4281-ada8-97bd6ee7513c",
+    "application_id": "APP-2026-00013",
+    "from_status": null,
+    "to_status": "PRE_ORIGINATION",
+    "action": "create",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-05-02T00:00:00.000Z"
+  },
+  {
+    "id": "5621ef35-c583-4670-9fa8-3a97ce88394d",
+    "application_id": "APP-2026-00013",
+    "from_status": "PRE_ORIGINATION",
+    "to_status": "ORIGINATION",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-05-02T02:00:00.000Z"
+  },
+  {
+    "id": "c8a8f11b-756e-486b-b951-4f33addeac54",
+    "application_id": "APP-2026-00013",
+    "from_status": "ORIGINATION",
+    "to_status": "CREDIT_REPORT",
+    "action": "transition",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-05-02T04:00:00.000Z"
+  },
+  {
+    "id": "57161e52-c29f-42c2-9260-83f8096e2eaf",
+    "application_id": "APP-2026-00014",
+    "from_status": null,
+    "to_status": "PRE_ORIGINATION",
+    "action": "create",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-22T20:00:00.000Z"
+  },
+  {
+    "id": "81d2420f-27eb-430a-be53-f654c27bef91",
+    "application_id": "APP-2026-00014",
+    "from_status": "PRE_ORIGINATION",
+    "to_status": "ORIGINATION",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-22T22:00:00.000Z"
+  },
+  {
+    "id": "801b02fb-9c36-427d-aa5d-4d8aaf590ce2",
+    "application_id": "APP-2026-00014",
+    "from_status": "ORIGINATION",
+    "to_status": "BANK_VERIFICATION",
+    "action": "transition",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-23T00:00:00.000Z"
+  },
+  {
+    "id": "85397e98-6ce9-4a98-8126-3647fd570ebe",
+    "application_id": "APP-2026-00015",
+    "from_status": null,
+    "to_status": "PRE_ORIGINATION",
+    "action": "create",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-26T08:00:00.000Z"
+  },
+  {
+    "id": "7b3ed95c-54d3-4f0c-8217-8ceb3fa07dad",
+    "application_id": "APP-2026-00015",
+    "from_status": "PRE_ORIGINATION",
+    "to_status": "ORIGINATION",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-26T10:00:00.000Z"
+  },
+  {
+    "id": "271a4d0d-74b8-4248-b5af-5350f094f071",
+    "application_id": "APP-2026-00015",
+    "from_status": "ORIGINATION",
+    "to_status": "BANK_VERIFICATION",
+    "action": "transition",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-26T12:00:00.000Z"
+  },
+  {
+    "id": "c7ce9932-a36e-46bf-853c-7bd0d5265b4b",
+    "application_id": "APP-2026-00016",
+    "from_status": null,
+    "to_status": "PRE_ORIGINATION",
+    "action": "create",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-28T17:00:00.000Z"
+  },
+  {
+    "id": "643c9b15-0ee9-400a-8204-8990bac65b64",
+    "application_id": "APP-2026-00016",
+    "from_status": "PRE_ORIGINATION",
+    "to_status": "ORIGINATION",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-28T19:00:00.000Z"
+  },
+  {
+    "id": "047cc202-c06b-452e-abbb-33739d626c03",
+    "application_id": "APP-2026-00016",
+    "from_status": "ORIGINATION",
+    "to_status": "BANK_VERIFICATION",
+    "action": "transition",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-28T21:00:00.000Z"
+  },
+  {
+    "id": "191c6212-3119-491d-bb31-44040a9f748d",
+    "application_id": "APP-2026-00018",
+    "from_status": null,
+    "to_status": "PRE_ORIGINATION",
+    "action": "create",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-05-07T10:00:00.000Z"
+  },
+  {
+    "id": "e27c23de-816a-4028-87bd-e873145b52d7",
+    "application_id": "APP-2026-00018",
+    "from_status": "PRE_ORIGINATION",
+    "to_status": "ORIGINATION",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-05-07T12:00:00.000Z"
+  },
+  {
+    "id": "14a1ccf3-88bf-421f-b8e9-48c02ca0539d",
+    "application_id": "APP-2026-00018",
+    "from_status": "ORIGINATION",
+    "to_status": "CREDIT_REPORT",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-05-07T14:00:00.000Z"
+  },
+  {
+    "id": "54b683ea-cf43-4c28-88c8-affff497d7e5",
+    "application_id": "APP-2026-00018",
+    "from_status": "CREDIT_REPORT",
+    "to_status": "BANK_VERIFICATION",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-05-07T16:00:00.000Z"
+  },
+  {
+    "id": "3cf59910-af5f-4159-9661-4a734b625391",
+    "application_id": "APP-2026-00018",
+    "from_status": "BANK_VERIFICATION",
+    "to_status": "APPLICATION_VERIFICATION",
+    "action": "transition",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-05-07T18:00:00.000Z"
+  },
+  {
+    "id": "2880183a-c0f5-416f-8cfb-f2926d0a2a31",
+    "application_id": "APP-2026-00019",
+    "from_status": null,
+    "to_status": "PRE_ORIGINATION",
+    "action": "create",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-05-07T01:00:00.000Z"
+  },
+  {
+    "id": "8001b170-9cfc-4051-94dc-22142a29a414",
+    "application_id": "APP-2026-00019",
+    "from_status": "PRE_ORIGINATION",
+    "to_status": "ORIGINATION",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-05-07T03:00:00.000Z"
+  },
+  {
+    "id": "1e02443a-0128-4768-b839-6e4f9adc76de",
+    "application_id": "APP-2026-00019",
+    "from_status": "ORIGINATION",
+    "to_status": "CREDIT_REPORT",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-05-07T05:00:00.000Z"
+  },
+  {
+    "id": "95dbcddf-6423-408e-a758-c508b9f31e9a",
+    "application_id": "APP-2026-00019",
+    "from_status": "CREDIT_REPORT",
+    "to_status": "BANK_VERIFICATION",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-05-07T07:00:00.000Z"
+  },
+  {
+    "id": "76f83c45-b8ca-484e-927c-00647b5528ba",
+    "application_id": "APP-2026-00019",
+    "from_status": "BANK_VERIFICATION",
+    "to_status": "APPLICATION_VERIFICATION",
+    "action": "transition",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-05-07T09:00:00.000Z"
+  },
+  {
+    "id": "a733388a-7362-4277-8012-19cf7b866e74",
+    "application_id": "APP-2026-00021",
+    "from_status": null,
+    "to_status": "PRE_ORIGINATION",
+    "action": "create",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-05-06T21:00:00.000Z"
+  },
+  {
+    "id": "321028b4-93e6-45b3-a438-0c68c51bd209",
+    "application_id": "APP-2026-00021",
+    "from_status": "PRE_ORIGINATION",
+    "to_status": "ORIGINATION",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-05-06T23:00:00.000Z"
+  },
+  {
+    "id": "1cbf34d0-bdc8-423d-bbbf-bd79c2e56d4f",
+    "application_id": "APP-2026-00021",
+    "from_status": "ORIGINATION",
+    "to_status": "CREDIT_REPORT",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-05-07T01:00:00.000Z"
+  },
+  {
+    "id": "2a80d31b-64df-4573-8690-4fa9b81bb727",
+    "application_id": "APP-2026-00021",
+    "from_status": "CREDIT_REPORT",
+    "to_status": "BANK_VERIFICATION",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-05-07T03:00:00.000Z"
+  },
+  {
+    "id": "f1ad785a-f219-4b7e-9a87-75217b40d326",
+    "application_id": "APP-2026-00021",
+    "from_status": "BANK_VERIFICATION",
+    "to_status": "APPLICATION_VERIFICATION",
+    "action": "transition",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-05-07T05:00:00.000Z"
+  },
+  {
+    "id": "329db000-2dbc-413c-b898-78c10958d70e",
+    "application_id": "APP-2026-00022",
+    "from_status": null,
+    "to_status": "PRE_ORIGINATION",
+    "action": "create",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-18T23:00:00.000Z"
+  },
+  {
+    "id": "2cf43016-4736-490d-990c-6453626369e2",
+    "application_id": "APP-2026-00022",
+    "from_status": "PRE_ORIGINATION",
+    "to_status": "ORIGINATION",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-19T01:00:00.000Z"
+  },
+  {
+    "id": "847c1819-6012-43f5-9c8f-e309c26d1661",
+    "application_id": "APP-2026-00022",
+    "from_status": "ORIGINATION",
+    "to_status": "CREDIT_REPORT",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-19T03:00:00.000Z"
+  },
+  {
+    "id": "047f507e-1bda-4646-8e6e-b5a173794e10",
+    "application_id": "APP-2026-00022",
+    "from_status": "CREDIT_REPORT",
+    "to_status": "BANK_VERIFICATION",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-19T05:00:00.000Z"
+  },
+  {
+    "id": "0aaf4594-b92b-42b1-8931-92f73f5e0615",
+    "application_id": "APP-2026-00022",
+    "from_status": "BANK_VERIFICATION",
+    "to_status": "APPLICATION_VERIFICATION",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-19T07:00:00.000Z"
+  },
+  {
+    "id": "c353a498-93a5-4dda-a6e4-b7bea8dd169a",
+    "application_id": "APP-2026-00022",
+    "from_status": "APPLICATION_VERIFICATION",
+    "to_status": "CREDIT_UNDERWRITING",
+    "action": "transition",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-19T09:00:00.000Z"
+  },
+  {
+    "id": "a7b75f28-f49a-4f6d-a942-6b5341810136",
+    "application_id": "APP-2026-00023",
+    "from_status": null,
+    "to_status": "PRE_ORIGINATION",
+    "action": "create",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-05-04T13:00:00.000Z"
+  },
+  {
+    "id": "88c0bb96-46d3-4636-8561-1e8bcb8b9f54",
+    "application_id": "APP-2026-00023",
+    "from_status": "PRE_ORIGINATION",
+    "to_status": "ORIGINATION",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-05-04T15:00:00.000Z"
+  },
+  {
+    "id": "8b3bd8de-5c39-40fe-9b75-65d7c6a717cc",
+    "application_id": "APP-2026-00023",
+    "from_status": "ORIGINATION",
+    "to_status": "CREDIT_REPORT",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-05-04T17:00:00.000Z"
+  },
+  {
+    "id": "5cf7433e-b5f5-43d6-8bce-05d07d648aa3",
+    "application_id": "APP-2026-00023",
+    "from_status": "CREDIT_REPORT",
+    "to_status": "BANK_VERIFICATION",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-05-04T19:00:00.000Z"
+  },
+  {
+    "id": "5af85d92-45ec-43c1-a405-22447e72b6e5",
+    "application_id": "APP-2026-00023",
+    "from_status": "BANK_VERIFICATION",
+    "to_status": "APPLICATION_VERIFICATION",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-05-04T21:00:00.000Z"
+  },
+  {
+    "id": "95f971df-d70d-41d4-bea0-a20ed11f5d5b",
+    "application_id": "APP-2026-00023",
+    "from_status": "APPLICATION_VERIFICATION",
+    "to_status": "CREDIT_UNDERWRITING",
+    "action": "transition",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-05-04T23:00:00.000Z"
+  },
+  {
+    "id": "f1c07709-0c9e-4a72-bfd1-ea174cd55ffb",
+    "application_id": "APP-2026-00025",
+    "from_status": null,
+    "to_status": "PRE_ORIGINATION",
+    "action": "create",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-19T17:00:00.000Z"
+  },
+  {
+    "id": "cb1c770b-7702-4b5f-b69b-fb041759548e",
+    "application_id": "APP-2026-00025",
+    "from_status": "PRE_ORIGINATION",
+    "to_status": "ORIGINATION",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-19T19:00:00.000Z"
+  },
+  {
+    "id": "b5da26b7-9ff2-4f6a-a7c6-63324a47759f",
+    "application_id": "APP-2026-00025",
+    "from_status": "ORIGINATION",
+    "to_status": "CREDIT_REPORT",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-19T21:00:00.000Z"
+  },
+  {
+    "id": "1ad697b6-ed8a-4995-8506-a33d432c2b9c",
+    "application_id": "APP-2026-00025",
+    "from_status": "CREDIT_REPORT",
+    "to_status": "BANK_VERIFICATION",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-19T23:00:00.000Z"
+  },
+  {
+    "id": "9d0abbf8-cf74-4a8a-be14-e8806514ca59",
+    "application_id": "APP-2026-00025",
+    "from_status": "BANK_VERIFICATION",
+    "to_status": "APPLICATION_VERIFICATION",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-20T01:00:00.000Z"
+  },
+  {
+    "id": "c821c376-4ff6-4b7a-9180-678798c24bbb",
+    "application_id": "APP-2026-00025",
+    "from_status": "APPLICATION_VERIFICATION",
+    "to_status": "CREDIT_UNDERWRITING",
+    "action": "transition",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-20T03:00:00.000Z"
+  },
+  {
+    "id": "0189dea1-ee8d-4042-a6f7-c44508012782",
+    "application_id": "APP-2026-00027",
+    "from_status": null,
+    "to_status": "PRE_ORIGINATION",
+    "action": "create",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-25T21:00:00.000Z"
+  },
+  {
+    "id": "3036740b-7454-41f9-b4a3-eebb647f8f8e",
+    "application_id": "APP-2026-00027",
+    "from_status": "PRE_ORIGINATION",
+    "to_status": "ORIGINATION",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-25T23:00:00.000Z"
+  },
+  {
+    "id": "bed9a43f-f988-4f40-9cd0-b082a5d13851",
+    "application_id": "APP-2026-00027",
+    "from_status": "ORIGINATION",
+    "to_status": "CREDIT_REPORT",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-26T01:00:00.000Z"
+  },
+  {
+    "id": "1261afb6-a3f9-4c0b-8c7e-0dbd3f07a27a",
+    "application_id": "APP-2026-00027",
+    "from_status": "CREDIT_REPORT",
+    "to_status": "BANK_VERIFICATION",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-26T03:00:00.000Z"
+  },
+  {
+    "id": "96eeed73-315b-4540-b876-0a1eeaeb6a44",
+    "application_id": "APP-2026-00027",
+    "from_status": "BANK_VERIFICATION",
+    "to_status": "APPLICATION_VERIFICATION",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-26T05:00:00.000Z"
+  },
+  {
+    "id": "5548fe3b-e25c-43ed-b6b8-e095e6c4a120",
+    "application_id": "APP-2026-00027",
+    "from_status": "APPLICATION_VERIFICATION",
+    "to_status": "CREDIT_UNDERWRITING",
+    "action": "transition",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-26T07:00:00.000Z"
+  },
+  {
+    "id": "a0eb2b16-43b8-4195-8ae6-e0e97ab2bd14",
+    "application_id": "APP-2026-00028",
+    "from_status": null,
+    "to_status": "PRE_ORIGINATION",
+    "action": "create",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-22T22:00:00.000Z"
+  },
+  {
+    "id": "a00d8211-db83-43a8-a7d9-48d39af7f56c",
+    "application_id": "APP-2026-00028",
+    "from_status": "PRE_ORIGINATION",
+    "to_status": "ORIGINATION",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-23T00:00:00.000Z"
+  },
+  {
+    "id": "1300e163-ca71-4a2a-8f0a-6704f0baae5f",
+    "application_id": "APP-2026-00028",
+    "from_status": "ORIGINATION",
+    "to_status": "CREDIT_REPORT",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-23T02:00:00.000Z"
+  },
+  {
+    "id": "cdfd0ee7-e593-447e-a540-3f46134167f2",
+    "application_id": "APP-2026-00028",
+    "from_status": "CREDIT_REPORT",
+    "to_status": "BANK_VERIFICATION",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-23T04:00:00.000Z"
+  },
+  {
+    "id": "5e64a81c-f5a3-4ebb-8617-660de3d360a3",
+    "application_id": "APP-2026-00028",
+    "from_status": "BANK_VERIFICATION",
+    "to_status": "APPLICATION_VERIFICATION",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-23T06:00:00.000Z"
+  },
+  {
+    "id": "41911da4-972b-4aa4-88fd-885ba7c1f683",
+    "application_id": "APP-2026-00028",
+    "from_status": "APPLICATION_VERIFICATION",
+    "to_status": "CREDIT_UNDERWRITING",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-23T08:00:00.000Z"
+  },
+  {
+    "id": "11dc2153-e25b-43f3-8c9b-359854be4286",
+    "application_id": "APP-2026-00028",
+    "from_status": "CREDIT_UNDERWRITING",
+    "to_status": "OFFER_ACCEPTANCE",
+    "action": "transition",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-23T10:00:00.000Z"
+  },
+  {
+    "id": "ba97cfcc-a3f7-48a1-abb7-f3347144df49",
+    "application_id": "APP-2026-00030",
+    "from_status": null,
+    "to_status": "PRE_ORIGINATION",
+    "action": "create",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-25T02:00:00.000Z"
+  },
+  {
+    "id": "812a2121-152c-408b-b114-a64472cebf9e",
+    "application_id": "APP-2026-00030",
+    "from_status": "PRE_ORIGINATION",
+    "to_status": "ORIGINATION",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-25T04:00:00.000Z"
+  },
+  {
+    "id": "a9bff9c8-e6c2-4da7-904f-78f46d34a341",
+    "application_id": "APP-2026-00030",
+    "from_status": "ORIGINATION",
+    "to_status": "CREDIT_REPORT",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-25T06:00:00.000Z"
+  },
+  {
+    "id": "8be59a03-c3bf-4664-a5a6-5a37f6754385",
+    "application_id": "APP-2026-00030",
+    "from_status": "CREDIT_REPORT",
+    "to_status": "BANK_VERIFICATION",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-25T08:00:00.000Z"
+  },
+  {
+    "id": "1667552f-f201-45e9-94fa-d5296b51e749",
+    "application_id": "APP-2026-00030",
+    "from_status": "BANK_VERIFICATION",
+    "to_status": "APPLICATION_VERIFICATION",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-25T10:00:00.000Z"
+  },
+  {
+    "id": "8598a070-f6ce-4578-b228-c2811f504721",
+    "application_id": "APP-2026-00030",
+    "from_status": "APPLICATION_VERIFICATION",
+    "to_status": "CREDIT_UNDERWRITING",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-25T12:00:00.000Z"
+  },
+  {
+    "id": "07b36781-2d98-4bdb-902b-dcce4fb7a50d",
+    "application_id": "APP-2026-00030",
+    "from_status": "CREDIT_UNDERWRITING",
+    "to_status": "OFFER_ACCEPTANCE",
+    "action": "transition",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-25T14:00:00.000Z"
+  },
+  {
+    "id": "23113522-c69d-459a-b169-6b152cf6912d",
+    "application_id": "APP-2026-00031",
+    "from_status": null,
+    "to_status": "PRE_ORIGINATION",
+    "action": "create",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-27T15:00:00.000Z"
+  },
+  {
+    "id": "adb4378c-94c5-42d4-a8f0-3474e8f02d5e",
+    "application_id": "APP-2026-00031",
+    "from_status": "PRE_ORIGINATION",
+    "to_status": "ORIGINATION",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-27T17:00:00.000Z"
+  },
+  {
+    "id": "0cbbefff-475b-4529-9632-08efb07278c3",
+    "application_id": "APP-2026-00031",
+    "from_status": "ORIGINATION",
+    "to_status": "CREDIT_REPORT",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-27T19:00:00.000Z"
+  },
+  {
+    "id": "7d74373d-e894-4d69-8ea7-1d3c20225e7b",
+    "application_id": "APP-2026-00031",
+    "from_status": "CREDIT_REPORT",
+    "to_status": "BANK_VERIFICATION",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-27T21:00:00.000Z"
+  },
+  {
+    "id": "90c4170e-5f23-4a6e-9779-bbcc62c5b394",
+    "application_id": "APP-2026-00031",
+    "from_status": "BANK_VERIFICATION",
+    "to_status": "APPLICATION_VERIFICATION",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-27T23:00:00.000Z"
+  },
+  {
+    "id": "137b84a6-381b-4d3d-a437-0acdc832559e",
+    "application_id": "APP-2026-00031",
+    "from_status": "APPLICATION_VERIFICATION",
+    "to_status": "CREDIT_UNDERWRITING",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-28T01:00:00.000Z"
+  },
+  {
+    "id": "dbe543af-e278-4190-800a-f492b465aa06",
+    "application_id": "APP-2026-00031",
+    "from_status": "CREDIT_UNDERWRITING",
+    "to_status": "OFFER_ACCEPTANCE",
+    "action": "transition",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-28T03:00:00.000Z"
+  },
+  {
+    "id": "959838f8-f117-4f06-a095-098dcb3e4ef9",
+    "application_id": "APP-2026-00032",
+    "from_status": null,
+    "to_status": "PRE_ORIGINATION",
+    "action": "create",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-26T04:00:00.000Z"
+  },
+  {
+    "id": "3017d55d-80ad-45fb-9b06-151f7c73b2c0",
+    "application_id": "APP-2026-00032",
+    "from_status": "PRE_ORIGINATION",
+    "to_status": "ORIGINATION",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-26T06:00:00.000Z"
+  },
+  {
+    "id": "2adcb488-009b-4d22-b5fd-8275ea91d071",
+    "application_id": "APP-2026-00032",
+    "from_status": "ORIGINATION",
+    "to_status": "CREDIT_REPORT",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-26T08:00:00.000Z"
+  },
+  {
+    "id": "e8287fc3-00aa-4f6b-a712-38cbcaf4d2ca",
+    "application_id": "APP-2026-00032",
+    "from_status": "CREDIT_REPORT",
+    "to_status": "BANK_VERIFICATION",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-26T10:00:00.000Z"
+  },
+  {
+    "id": "60ac3362-a8d5-4174-b3bf-6f1271ae3dd2",
+    "application_id": "APP-2026-00032",
+    "from_status": "BANK_VERIFICATION",
+    "to_status": "APPLICATION_VERIFICATION",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-26T12:00:00.000Z"
+  },
+  {
+    "id": "1453c0e6-f333-4bc9-90a0-50b31542f109",
+    "application_id": "APP-2026-00032",
+    "from_status": "APPLICATION_VERIFICATION",
+    "to_status": "CREDIT_UNDERWRITING",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-26T14:00:00.000Z"
+  },
+  {
+    "id": "4554ed4d-26ef-4682-a30d-1a714fa4ae5c",
+    "application_id": "APP-2026-00032",
+    "from_status": "CREDIT_UNDERWRITING",
+    "to_status": "OFFER_ACCEPTANCE",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-26T16:00:00.000Z"
+  },
+  {
+    "id": "153a6205-4f8f-43d0-b4ec-cbf993c46d1d",
+    "application_id": "APP-2026-00032",
+    "from_status": "OFFER_ACCEPTANCE",
+    "to_status": "AGREEMENT_SIGNATURE",
+    "action": "transition",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-26T18:00:00.000Z"
+  },
+  {
+    "id": "7101f7b6-66f8-4a95-93f9-ff24d46eefe0",
+    "application_id": "APP-2026-00033",
+    "from_status": null,
+    "to_status": "PRE_ORIGINATION",
+    "action": "create",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-20T06:00:00.000Z"
+  },
+  {
+    "id": "c00cb7e6-d37b-4dbd-b938-824f5dcb6439",
+    "application_id": "APP-2026-00033",
+    "from_status": "PRE_ORIGINATION",
+    "to_status": "ORIGINATION",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-20T08:00:00.000Z"
+  },
+  {
+    "id": "64574d1b-ac39-417f-b07e-fe31053868e8",
+    "application_id": "APP-2026-00033",
+    "from_status": "ORIGINATION",
+    "to_status": "CREDIT_REPORT",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-20T10:00:00.000Z"
+  },
+  {
+    "id": "fb7a3e3d-f5a7-4cbc-8d02-93e388a064a1",
+    "application_id": "APP-2026-00033",
+    "from_status": "CREDIT_REPORT",
+    "to_status": "BANK_VERIFICATION",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-20T12:00:00.000Z"
+  },
+  {
+    "id": "d1cca320-def4-448e-9d93-58486254dcc5",
+    "application_id": "APP-2026-00033",
+    "from_status": "BANK_VERIFICATION",
+    "to_status": "APPLICATION_VERIFICATION",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-20T14:00:00.000Z"
+  },
+  {
+    "id": "e18b7d7f-d5ed-4fc8-8921-3650b3cf2d69",
+    "application_id": "APP-2026-00033",
+    "from_status": "APPLICATION_VERIFICATION",
+    "to_status": "CREDIT_UNDERWRITING",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-20T16:00:00.000Z"
+  },
+  {
+    "id": "6d234575-440c-496c-9b67-0df6612c2981",
+    "application_id": "APP-2026-00033",
+    "from_status": "CREDIT_UNDERWRITING",
+    "to_status": "OFFER_ACCEPTANCE",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-20T18:00:00.000Z"
+  },
+  {
+    "id": "1df0c39f-1086-40b2-913d-07229cfb4332",
+    "application_id": "APP-2026-00033",
+    "from_status": "OFFER_ACCEPTANCE",
+    "to_status": "AGREEMENT_SIGNATURE",
+    "action": "transition",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-20T20:00:00.000Z"
+  },
+  {
+    "id": "68e8cdb8-0f2b-49db-8932-8fc43bdd8618",
+    "application_id": "APP-2026-00035",
+    "from_status": null,
+    "to_status": "PRE_ORIGINATION",
+    "action": "create",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-28T15:00:00.000Z"
+  },
+  {
+    "id": "f58f9b59-5b33-468d-a043-a9ffea1cc127",
+    "application_id": "APP-2026-00035",
+    "from_status": "PRE_ORIGINATION",
+    "to_status": "ORIGINATION",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-28T17:00:00.000Z"
+  },
+  {
+    "id": "98bf480d-2894-46fe-be97-38880f3bef94",
+    "application_id": "APP-2026-00035",
+    "from_status": "ORIGINATION",
+    "to_status": "CREDIT_REPORT",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-28T19:00:00.000Z"
+  },
+  {
+    "id": "0b3836fd-46fc-415d-939f-c50826ea5d84",
+    "application_id": "APP-2026-00035",
+    "from_status": "CREDIT_REPORT",
+    "to_status": "BANK_VERIFICATION",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-28T21:00:00.000Z"
+  },
+  {
+    "id": "83f434e0-5a8a-44d0-ab3f-cf77fc8975ea",
+    "application_id": "APP-2026-00035",
+    "from_status": "BANK_VERIFICATION",
+    "to_status": "APPLICATION_VERIFICATION",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-28T23:00:00.000Z"
+  },
+  {
+    "id": "e4b10c78-d9ee-4548-90f5-63b600d51e74",
+    "application_id": "APP-2026-00035",
+    "from_status": "APPLICATION_VERIFICATION",
+    "to_status": "CREDIT_UNDERWRITING",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-29T01:00:00.000Z"
+  },
+  {
+    "id": "cead186d-2f0e-4949-b314-0a70bbbf1664",
+    "application_id": "APP-2026-00035",
+    "from_status": "CREDIT_UNDERWRITING",
+    "to_status": "OFFER_ACCEPTANCE",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-29T03:00:00.000Z"
+  },
+  {
+    "id": "99d7902b-15f5-4f65-93d0-b57d9c8362c3",
+    "application_id": "APP-2026-00035",
+    "from_status": "OFFER_ACCEPTANCE",
+    "to_status": "AGREEMENT_SIGNATURE",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-29T05:00:00.000Z"
+  },
+  {
+    "id": "4192d094-fd50-4937-b3ff-74476930f912",
+    "application_id": "APP-2026-00035",
+    "from_status": "AGREEMENT_SIGNATURE",
+    "to_status": "APPROVED",
+    "action": "transition",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-29T07:00:00.000Z"
+  },
+  {
+    "id": "87d6a74b-aebf-44bc-a2f5-788e9a67b6c6",
+    "application_id": "APP-2026-00036",
+    "from_status": null,
+    "to_status": "PRE_ORIGINATION",
+    "action": "create",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-05-01T10:00:00.000Z"
+  },
+  {
+    "id": "67b0c3c5-5771-4344-aede-86cc0aaa00f2",
+    "application_id": "APP-2026-00036",
+    "from_status": "PRE_ORIGINATION",
+    "to_status": "ORIGINATION",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-05-01T12:00:00.000Z"
+  },
+  {
+    "id": "6eacb31f-88f8-440f-bc76-596b15d50c6e",
+    "application_id": "APP-2026-00036",
+    "from_status": "ORIGINATION",
+    "to_status": "CREDIT_REPORT",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-05-01T14:00:00.000Z"
+  },
+  {
+    "id": "24d26986-6bbb-4552-9b3f-c3c30f117416",
+    "application_id": "APP-2026-00036",
+    "from_status": "CREDIT_REPORT",
+    "to_status": "BANK_VERIFICATION",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-05-01T16:00:00.000Z"
+  },
+  {
+    "id": "6b13b141-f543-4b3f-b1c1-c8317acfad0e",
+    "application_id": "APP-2026-00036",
+    "from_status": "BANK_VERIFICATION",
+    "to_status": "APPLICATION_VERIFICATION",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-05-01T18:00:00.000Z"
+  },
+  {
+    "id": "02364e16-f733-4e46-b43b-acf6efc3ada0",
+    "application_id": "APP-2026-00036",
+    "from_status": "APPLICATION_VERIFICATION",
+    "to_status": "CREDIT_UNDERWRITING",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-05-01T20:00:00.000Z"
+  },
+  {
+    "id": "35c0a64b-8fd6-4fb8-a548-07f2586e6dd6",
+    "application_id": "APP-2026-00036",
+    "from_status": "CREDIT_UNDERWRITING",
+    "to_status": "REJECTED",
+    "action": "transition",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-05-01T22:00:00.000Z"
+  },
+  {
+    "id": "6f511a78-76e0-4e70-aae4-f552b9f115f4",
+    "application_id": "APP-2026-00037",
+    "from_status": null,
+    "to_status": "PRE_ORIGINATION",
+    "action": "create",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-24T21:00:00.000Z"
+  },
+  {
+    "id": "d01aa80c-090e-42b9-991d-0920ee9a1128",
+    "application_id": "APP-2026-00037",
+    "from_status": "PRE_ORIGINATION",
+    "to_status": "ORIGINATION",
+    "action": "auto_advance",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-24T23:00:00.000Z"
+  },
+  {
+    "id": "37310303-3b24-4443-bdc5-decd4a3ee12b",
+    "application_id": "APP-2026-00037",
+    "from_status": "ORIGINATION",
+    "to_status": "CANCELLED",
+    "action": "transition",
+    "actor_id": "u-ops-1",
+    "actor_name": "Ops Intake",
+    "occurred_at": "2026-04-25T01:00:00.000Z"
+  }
+]
