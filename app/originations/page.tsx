@@ -1,177 +1,204 @@
-import { StubBanner } from "@/components/ui/stub-banner";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import Link from "next/link";
+import { repository } from "@/lib/data/repository";
+import { Topbar } from "@/components/layout/topbar";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Table, THead, TBody, TR, TH, TD } from "@/components/ui/table";
+import { formatCAD } from "@/lib/utils";
+import {
+  applicationAgeDays,
+  applicationStatusVariant,
+  buildFunnelBuckets,
+  filterApplications,
+  STATUS_FULL_LABEL,
+  STATUS_SHORT_LABEL,
+  FUNNEL_ORDER,
+} from "@/lib/originations";
+import type { ApplicationStatus } from "@/lib/types/enums";
 
-export default function OriginationsPage() {
+interface OriginationsPageProps {
+  searchParams: Promise<{
+    status?: string;
+    vendor?: string;
+    province?: string;
+    q?: string;
+  }>;
+}
+
+export default async function OriginationsPage({
+  searchParams,
+}: OriginationsPageProps) {
+  const params = await searchParams;
+  const [applications, vendors] = await Promise.all([
+    repository.listApplications(),
+    repository.listVendors(),
+  ]);
+
+  // Worklist scope: drop ACTIVE / CLOSED — those live in Servicing.
+  const inFlight = applications.filter(
+    (a) => a.status !== "ACTIVE" && a.status !== "CLOSED",
+  );
+  const filtered = filterApplications(inFlight, {
+    status: params.status as ApplicationStatus | undefined,
+    vendor_id: params.vendor,
+    province: params.province as "BC" | "AB" | undefined,
+    q: params.q,
+  });
+
+  // Sort: oldest first (highest age) so stale apps surface to the top.
+  const sorted = [...filtered].sort((a, b) =>
+    a.created_at < b.created_at ? -1 : 1,
+  );
+
+  const funnel = buildFunnelBuckets(inFlight);
+  const activeStatus = params.status as ApplicationStatus | undefined;
+
+  // Helper to build a query-string href that toggles a single param.
+  const hrefFor = (overrides: Record<string, string | undefined>) => {
+    const next = { ...params, ...overrides };
+    const qs = Object.entries(next)
+      .filter(([, v]) => v && v.length > 0)
+      .map(([k, v]) => `${k}=${encodeURIComponent(v as string)}`)
+      .join("&");
+    return qs ? `/originations?${qs}` : "/originations";
+  };
+
   return (
-    <div className="p-6 max-w-[1400px] mx-auto space-y-6">
-      <header>
-        <div className="text-[11px] font-semibold tracking-wider text-gold-dim uppercase">
-          Workplace
-        </div>
-        <h1 className="text-2xl font-semibold text-ink mt-1">Originations</h1>
-        <p className="text-ink-dim text-sm mt-1 max-w-3xl">
-          Pending applications that have not yet been submitted for credit
-          underwriting. Create, edit, and progress new loan applications through
-          the Status Flow state machine.
-        </p>
-      </header>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Loan Header (static across all tabs)</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ul className="grid grid-cols-3 gap-x-6 gap-y-1 text-[12px] text-ink-dim font-mono">
-            {[
-              "Profile photo (face shot)",
-              "Borrower name",
-              "Application #",
-              "Province (BC | AB)",
-              "Vendor name",
-              "Provider / location",
-              "Credit product",
-              "Requested amount",
-              "Offer amount",
-              "Loan term",
-              "Interest rate",
-              "Start date (contract)",
-            ].map((f) => (
-              <li
-                key={f}
-                className="before:content-['—'] before:mr-2 before:text-ink-mute"
+    <>
+      <Topbar
+        title="Originations"
+        subtitle={`${inFlight.length} in-flight applications across ${vendors.length} vendors`}
+      />
+      <div className="bg-navy-800 flex-1 overflow-y-auto">
+        {/* Funnel KPI strip */}
+        <div className="border-b border-line bg-navy-900 px-6 py-4">
+          <div className="flex flex-wrap gap-2">
+            <Link
+              href={hrefFor({ status: undefined })}
+              className={`px-3 py-1.5 rounded border text-[11px] font-semibold tracking-wider uppercase transition-colors ${
+                !activeStatus
+                  ? "border-gold text-gold bg-gold/10"
+                  : "border-line text-ink-dim hover:text-ink hover:border-ink-mute"
+              }`}
+            >
+              All <span className="ml-1.5 font-mono">{inFlight.length}</span>
+            </Link>
+            {funnel.map((b) => (
+              <Link
+                key={b.status}
+                href={hrefFor({ status: b.status })}
+                className={`px-3 py-1.5 rounded border text-[11px] font-semibold tracking-wider uppercase transition-colors ${
+                  activeStatus === b.status
+                    ? "border-gold text-gold bg-gold/10"
+                    : "border-line text-ink-dim hover:text-ink hover:border-ink-mute"
+                }`}
+                title={b.full_label}
               >
-                {f}
-              </li>
+                {b.short_label}
+                <span className="ml-1.5 font-mono">{b.count}</span>
+              </Link>
             ))}
-          </ul>
-        </CardContent>
-      </Card>
+          </div>
+        </div>
 
-      <StubBanner
-        pr="PR #2"
-        description="Customer Details tab — reflects information supplied during the credit application. Edit button unlocks fields in a pop-up."
-        fields={[
-          "Personal information",
-          "Residence / address (with map)",
-          "Identification (ID type, number, expiry)",
-          "Employment & income",
-          "Edit pop-up form (Zod-validated)",
-        ]}
-      />
-
-      <StubBanner
-        pr="PR #2"
-        description="Co-Borrower tab — add / remove / view co-borrower (same fields as Customer Details)."
-        fields={[
-          "Add co-borrower button",
-          "Remove co-borrower",
-          "Same field set as primary borrower",
-        ]}
-      />
-
-      <StubBanner
-        pr="PR #2"
-        description="Bank Details tab — Flinks-verified accounts + manual entry. Selectable default payment source. Auto-creates Zum Rails payment profile on add."
-        fields={[
-          "Bank name",
-          "Account number (masked ****)",
-          "Transit number",
-          "Institution number",
-          "Account holder name",
-          "Account type",
-          "Source (Flinks | Manual)",
-          "Set as default payment source",
-          "Add manual account",
-          "Delete account",
-          "Permission-gated full reveal",
-          "Auto Zum Rails payment-profile creation",
-        ]}
-      />
-
-      <StubBanner
-        pr="PR #2"
-        description="Summary tab — applicant + co-applicant contact + loan header recap + previous applications/loans for the borrower."
-        fields={[
-          "Name, email, phone, province (both)",
-          "Loan header recap",
-          "Previous loans table",
-          "App/Loan #, amount, term, installment, frequency",
-          "Open date, close date, max DPD, balance, status",
-        ]}
-      />
-
-      <StubBanner
-        pr="PR #2"
-        description="Initial Schedule tab — full amortization with Adjust Terms pop-up that lets you re-quote the deal."
-        fields={[
-          "Installment # / date / amount",
-          "Principal paid / interest paid / fees paid",
-          "Adjust Terms: province, product, amount, term, rate",
-          "Adjust Terms: payment frequency, vendor, provider",
-          "Adjust Terms: start date, first payment date",
-        ]}
-      />
-
-      <StubBanner
-        pr="PR #2"
-        description="Workflow tab — audit trail of every status transition (sourced from application_status_events)."
-        fields={[
-          "Date / time",
-          "Previous status",
-          "New status",
-          "Comments",
-          "User",
-        ]}
-      />
-
-      <StubBanner
-        pr="PR #2"
-        description="Contacts tab — log every customer interaction (call, email, SMS, in-person) with outcome."
-        fields={[
-          "Date / time",
-          "Method (Call | Email | SMS | In-person)",
-          "Direction (Inbound | Outbound)",
-          "Outcome",
-          "Notes",
-          "User",
-        ]}
-      />
-
-      <StubBanner
-        pr="PR #2"
-        description="Documents tab — upload, version, and e-sign borrower-facing docs (loan agreement, IDs, NoA, payslips, etc.)."
-        fields={[
-          "Document type",
-          "File name / version",
-          "Uploaded by / date",
-          "SignNow envelope status",
-          "Download / preview",
-        ]}
-      />
-
-      <StubBanner
-        pr="PR #2"
-        description="Bank Statements tab — Flinks-pulled transactions categorized via the CPA EFT code table (lib/cpa-codes.ts)."
-        fields={[
-          "Date & time",
-          "Balance",
-          "Debit / credit",
-          "Description",
-          "CPA category (Income | Expense | Transfer | Loan | Government | Other)",
-          "Restricted-code flag (200–299 gov)",
-        ]}
-      />
-
-      <StubBanner
-        pr="PR #2"
-        description="Comments tab — internal-only thread visible to admin/underwriting/servicing users."
-        fields={[
-          "Author",
-          "Timestamp",
-          "Body (markdown)",
-          "@mentions",
-        ]}
-      />
-    </div>
+        {/* Worklist */}
+        <div className="p-6">
+          <Card>
+            {sorted.length === 0 ? (
+              <div className="p-12 text-center">
+                <div className="text-ink-mute text-[13px]">
+                  No applications match the current filters.
+                </div>
+                <Link
+                  href="/originations"
+                  className="text-gold-dim text-[12px] mt-2 inline-block hover:text-gold"
+                >
+                  Clear filters
+                </Link>
+              </div>
+            ) : (
+              <Table>
+                <THead>
+                  <TR>
+                    <TH>App #</TH>
+                    <TH>Borrower</TH>
+                    <TH>Vendor</TH>
+                    <TH>Prov.</TH>
+                    <TH>Product</TH>
+                    <TH className="text-right">Requested</TH>
+                    <TH className="text-right">Term</TH>
+                    <TH className="text-right">Age</TH>
+                    <TH>Status</TH>
+                  </TR>
+                </THead>
+                <TBody>
+                  {sorted.map((a) => {
+                    const age = applicationAgeDays(a);
+                    const stale = age > 7 && FUNNEL_ORDER.indexOf(a.status) < 8;
+                    return (
+                      <TR key={a.id}>
+                        <TD className="text-gold">
+                          <Link
+                            href={`/originations/${a.id}/summary`}
+                            className="hover:underline"
+                          >
+                            {a.application_number}
+                          </Link>
+                        </TD>
+                        <TD className="font-sans text-[13px]">
+                          {a.primary_borrower_id ?? "—"}
+                        </TD>
+                        <TD>{a.vendor_name}</TD>
+                        <TD>{a.province}</TD>
+                        <TD>{a.credit_product_id ?? "—"}</TD>
+                        <TD className="text-right">
+                          {formatCAD(a.requested_amount)}
+                        </TD>
+                        <TD className="text-right">
+                          {a.term_months ? `${a.term_months} mo` : "—"}
+                        </TD>
+                        <TD
+                          className={`text-right ${
+                            stale ? "text-warn" : "text-ink-dim"
+                          }`}
+                        >
+                          {age}d
+                        </TD>
+                        <TD>
+                          <Badge variant={applicationStatusVariant(a.status)}>
+                            {STATUS_FULL_LABEL[a.status]}
+                          </Badge>
+                        </TD>
+                      </TR>
+                    );
+                  })}
+                </TBody>
+              </Table>
+            )}
+          </Card>
+          <p className="text-ink-mute text-[11px] mt-3">
+            Tip: click an application number to open the full Loan Header.
+            Stale flag (yellow Age column) marks applications older than 7
+            days that have not yet reached Offer Acceptance.{" "}
+            <span className="text-gold-dim">
+              Filters: status (chip strip above), vendor, province, q. URL
+              query parameters are the source of truth.
+            </span>
+          </p>
+        </div>
+      </div>
+    </>
   );
 }
+
+export const dynamic = "force-static";
+
+// Pre-render all funnel-status filter pages at build time so the chip
+// strip is instant.
+export async function generateStaticParams() {
+  return FUNNEL_ORDER.map((status) => ({ status }));
+}
+
+// Suppress the originations stub label that lived here before \u2014 the page
+// is a real worklist now.
+void STATUS_SHORT_LABEL;
