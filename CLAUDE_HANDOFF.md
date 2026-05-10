@@ -4,6 +4,31 @@
 
 ---
 
+## ⚠️ Critical framing — this is a CUTOVER, not a launch
+
+**PaySpyre is a running 4-year-old Canadian patient-financing lender.** It is operating today on TurnKey (a leased platform). Everything below is already live in production on TurnKey:
+
+- BC + AB lender licensing
+- Bank account + Zum Rails EFT
+- Flinks contract
+- Equifax Canada bureau (assumed live — confirm)
+- SignNow e-sign
+- SendGrid email
+- Real vendors (Elevation Dental was a real onboarding example, not hypothetical)
+- Real borrowers, real loans, real payment schedules, real collections cases
+
+**The goal of this codebase is to replace TurnKey** so PaySpyre owns its own platform and stops paying TurnKey rent. The critical path is **feature parity + clean data migration off TurnKey**, NOT a market launch.
+
+This reframing is important because:
+- David Wilson's PR #7 review is a refinement, not a gating decision. The schema is already correct enough to migrate against; the bracket details can be tuned post-cutover.
+- The biggest unknown is **what TurnKey lets you export** — full DB dump? API? CSV? This gates the migration adapter and is more important than any UI work.
+- We need a **dual-run + reconciliation** period before flipping the production cutover.
+- Underwriting can keep running in TurnKey for an extra few weeks if needed. **Servicing + Collections cannot** — they're the most-used daily surfaces.
+
+See §7 below for the revised PR ladder reflecting cutover priorities.
+
+---
+
 ## 0. Identity & roles
 
 - **You are working for Dr. Michael Webster** — owner of PaySpyre Financial (Canadian dental patient-financing lender, CAD only, BC + AB only).
@@ -185,19 +210,34 @@ payspyre-admin-demo/
 
 ---
 
-## 7. What's next (PR #4 plan, pending David's PR #3.1 sign-off)
+## 7. What's next — REVISED for cutover (PR #4.x ladder)
 
-Each section in PR #3 has a `StubBanner` listing the fields its real UI must render. PR #4 is the workplace build-out:
+**Old framing (wrong):** "Build out the remaining workplaces in any order."
+**Correct framing:** "Get to feature parity + clean TurnKey extraction so we can terminate TurnKey."
 
-1. **Underwriting workplace** — pull tab, decisions, scorecard runs.
-2. **Servicing workplace** — needs new data model (`loans`, `payment_schedules`, `transactions`) before tab UIs can be built. Block on this if not yet defined.
-3. **Collections workplace** — bucketed by DPD, NSF handling, promise-to-pay tracking.
-4. **Reports workplace** — exec dashboards, vendor reports, regulatory exports.
-5. **Archive workplace** — closed-loan view, immutable.
-6. **Settings — Loan Settings editor** — the actual product editor on top of the PR #3.1 bracket schema. **Per-bracket disclosure / document templates** are part of this scope (deferred from PR #3.1 — see `docs/spec/credit-product-architecture.md` §6).
-7. **Settings — Decision Engine** — scorecard rules + auto-decision thresholds. Once defined, attach `decision_strategy_id` to `AmountBracket` (called out as a goal by David).
+The sequence below prioritizes (a) what gates the migration, then (b) what borrowers + ops staff touch daily, then (c) lower-urgency surfaces:
 
-PR #4 should be split into multiple stacked PRs (PR #4.1, #4.2, …) by section to keep diffs reviewable.
+| PR | Scope | Why this order |
+|---|---|---|
+| **PR #4.1** | **Servicing data model** — `loans`, `payment_schedules`, `transactions`, `payments`, `nsf_events`. TS types in `lib/types/`, Zod schemas, mock data in `lib/data/repository.ts`, SQL mirror in `supabase/schema.sql`. | Pure schema. Mirrors whatever shape TurnKey gives us on export. **Unblocks everything downstream.** Not blocked on David. |
+| **PR #4.2** | **TurnKey export adapter + migration runner** — `lib/migration/turnkey-import.ts` with one adapter per entity (borrowers, applications, loans, schedules, transactions, documents), reconciliation report generator, idempotent re-runs. Stub the actual TurnKey API calls until we know the export shape. | **New top priority.** Until we know we can extract clean data, every UI PR is theoretical. The adapter is the gating de-risking work. |
+| **PR #4.3** | **Servicing workplace** — borrower lookup, schedule viewer, payments ledger, NSF handling, manual adjustments. | Most-used daily surface. Must work day one of cutover. |
+| **PR #4.4** | **Collections workplace** — DPD buckets, promise-to-pay tracking, NSF workflow, queue management. | Second-most-used. Direct revenue impact if it lags. |
+| **PR #4.5** | **Underwriting workplace + Loan Settings editor** (the bracket UI on top of PR #3.1's schema). | Lower urgency for cutover — Underwriting can keep running in TurnKey for an extra few weeks if needed while we migrate Servicing/Collections first. |
+| **PR #4.6** | **Reports + reconciliation dashboards** — exec dashboards, vendor reports, regulatory exports, and (critical) the dual-run reconciliation views comparing PaySpyre platform vs TurnKey during parallel-run period. | Required for the dual-run period. Build last but design the reconciliation schema in PR #4.1. |
+| **PR #4.7** | **Integration cutover** — webhook endpoint switch (Zum Rails, Flinks, SignNow), callback URL rotation, API key rotation, IP allowlist updates. | Final pre-flip work. One concrete checklist per provider. |
+| **PR #4.8** | **Decision Engine** — scorecard rules + auto-decision thresholds. Attach `decision_strategy_id` to `AmountBracket`. | Deferred until post-cutover. Auto-decisioning is a policy refinement, not a cutover gate; manual review works in the interim. |
+
+**Open homework items (not code-blocked):**
+
+1. **What does TurnKey actually let us export?** Full DB dump? API only? CSV? PDFs of documents? This determines PR #4.2's design. Ask TurnKey, OR reverse-engineer from whatever export endpoint exists.
+2. **TurnKey contract end date** — is there a hard cliff or month-to-month?
+3. **Active loan / borrower count** to migrate — affects whether we do one big-bang migration or rolling/batched.
+4. **MSA template** — Michael said "Ready to have an MSA template?" — plugs into the vendor onboarding doc slots in PR #1.2. Drop it into `docs/spec/vendor/` when shared.
+5. **Confirm Equifax is live + key/contract status** for the cutover.
+6. **Audit trail / regulatory continuity** — for BC + AB consumer credit, loan history must be reconcilable to the dollar across the migration. Reconciliation views in PR #4.6 are the regulatory artifact.
+
+PR #4 is split into PR #4.1 through #4.8 stacked sequentially for review-ability.
 
 ---
 
@@ -240,11 +280,23 @@ gh pr view 7 --comments
 
 ---
 
-## 10. Open questions for David (pending in PR #7)
+## 10. Open questions for David — DESIGN-LOCK STRATEGY
+
+Michael's stated direction: **David is slow and is holding up the cutover.** Don't gate code on his answers. Strategy:
+
+1. **Schema is design-locked as of PR #7** unless David explicitly objects. The bracket model accommodates every reasonable answer to questions below — if David later changes his mind, schema migrations are small (single-digit hours) and tests are already in place.
+2. **Do not block PR #4.1 through PR #4.4 on David.** Servicing data model, TurnKey migration adapter, Servicing workplace, and Collections workplace have nothing to do with credit-product configuration. Ship them.
+3. **Loan Settings editor (PR #4.5)** is the first PR that surfaces brackets in UI. Build it against the current schema. If David changes his mind by then, adapt; otherwise ship.
+
+Questions still parked in PR #7 (not blocking, just for the record):
 
 1. Does the bracket shape land the way he intended (multiple `permitted_terms[]` per bracket, single `rate_band` per bracket)?
-2. Confirm fees stay at the product level (`origination_fee_pct`) rather than per-bracket?
-3. Confirm `decision_strategy_id` should attach at the bracket level (his stated goal of "approval strategy" varying with loan size)?
-4. Does he want pricing tier names surfaced as a separate concept, or is the `rate_band` (min / default / max APR) sufficient?
+2. Fees at product level (`origination_fee_pct`) vs per-bracket?
+3. `decision_strategy_id` at bracket level?
+4. Are pricing tier *names* a separate concept, or is `rate_band` sufficient?
 
-Don't proceed to PR #4 (Loan Settings editor) until these are answered — the editor's UX depends on them.
+**The only things David is genuinely on the critical path for** (Michael needs to extract these from him separately):
+
+- Credit policy v0 — even a one-pager: "auto-decline below X, auto-approve above Y up to $Z, manual review otherwise." This gates PR #4.8 (Decision Engine) only.
+- Sign-off on the TurnKey termination timeline + dual-run window.
+- Any business-rule preferences for the reconciliation reports (what tolerances, what cadence).
