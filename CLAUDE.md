@@ -155,6 +155,11 @@ Carryovers from the existing TurnKey deployment are marked **(existing)**.
   sorted worklist (oldest first). Each row links to the Servicing NSF
   tab. Action workflow (retry / PTP capture / resolution) follows in a
   PR #4.4.x stub.
+- **PR #4.4.1 (NSF event detail page):** drills into a single
+  unresolved NSF event from the Collections worklist. Shows the full
+  event + the bounced payment in one view. Includes a disabled-form
+  scaffold for the Resolve / Retry workflow that PR #4.4.2 wires into
+  Server Actions. Repository gains `getNSFEvent` + `getPayment` accessors.
 - **PR #4.5+ (workplace build-out):** Underwriting workplace, Loan
   Settings editor, Reports / reconciliation, Integration cutover,
   Decision Engine. Each fills in remaining `StubBanner` placeholders.

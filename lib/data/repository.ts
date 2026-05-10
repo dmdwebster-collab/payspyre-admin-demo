@@ -174,4 +174,10 @@ export const repository = {
       a.occurred_at < b.occurred_at ? 1 : -1,
     );
   },
+  async getNSFEvent(id: string): Promise<NSFEvent | undefined> {
+    return NSF_EVENTS.find((n) => n.id === id);
+  },
+  async getPayment(id: string): Promise<Payment | undefined> {
+    return PAYMENTS.find((p) => p.id === id);
+  },
 };

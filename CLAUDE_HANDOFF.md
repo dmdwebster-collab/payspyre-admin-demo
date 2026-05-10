@@ -83,23 +83,23 @@ See §7 below for the revised PR ladder reflecting cutover priorities.
 | PR #4.1 | `redesign/servicing-data-model-pr4-1` | [#8](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/8) | **Merged to main** — Servicing data model |
 | PR #4.2 | `redesign/turnkey-export-adapter-pr4-2` | [#9](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/9) | **Merged to main** — TurnKey export adapter |
 | PR #4.3 | `redesign/servicing-workplace-pr4-3` | [#12](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/12) | **Merged to main** — Servicing workplace shell + Schedule viewer |
-| **PR #4.4** | **`redesign/collections-workplace-pr4-4`** | _open in this PR_ | **In progress** — Collections workplace: NSF-event-driven queue + DPD bucketing |
+| PR #4.4 | `redesign/collections-workplace-pr4-4` | [#13](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/13) | **Merged to main** — Collections NSF queue + DPD bucketing |
+| **PR #4.4.1** | **`redesign/nsf-detail-pr4-4-1`** | _open in this PR_ | **In progress** — NSF event detail page + Resolve/Retry scaffold |
 
-PRs #1 → #4.3 are all squashed onto main. PR #4.4 branches directly off main (no longer stacked on a draft).
+PRs #1 → #4.4 are all squashed onto main. PR #4.4.1 branches directly off main.
 
 ---
 
 ## 4. Where you are right now
 
-**Current branch:** `redesign/collections-workplace-pr4-4`
+**Current branch:** `redesign/nsf-detail-pr4-4-1`
 **Stacked on:** `main`
-**Tests:** 158/158 passing (8 vitest files — adds `lib/collections.test.ts`)
+**Tests:** 158/158 passing (no new vitest files — UI-only PR)
 **Build:** `npm run build` clean
 
-PRs #2 → #4.3 + the hotfix #11 are all on main. This PR rewrites
-`/collections` from PR #3's mock-DPD-on-applications stub to a real
-NSF-event-driven queue with bucket KPIs. Next up: PR #4.4.x (the action
-workflow — retry / PTP / resolution).
+This PR adds the NSF event detail page at `/collections/nsf/[eventId]`
+with the Resolve / Retry action scaffold. Server Actions land in
+PR #4.4.2.
 
 ---
 

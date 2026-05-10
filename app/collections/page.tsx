@@ -111,6 +111,7 @@ export default async function CollectionsPage() {
             <table className="w-full text-sm">
               <thead className="border-b bg-muted/30">
                 <tr className="text-left text-xs text-muted-foreground">
+                  <th className="px-4 py-2 font-medium">Event</th>
                   <th className="px-4 py-2 font-medium">Loan</th>
                   <th className="px-4 py-2 font-medium">Occurred</th>
                   <th className="px-4 py-2 font-medium">DPD</th>
@@ -125,8 +126,16 @@ export default async function CollectionsPage() {
                   <tr key={event.id} className="border-b last:border-b-0 hover:bg-muted/20">
                     <td className="px-4 py-2 font-mono text-xs">
                       <Link
-                        href={`/servicing/${event.loan_id}/nsf`}
+                        href={`/collections/nsf/${event.id}`}
                         className="text-foreground hover:underline"
+                      >
+                        {event.id}
+                      </Link>
+                    </td>
+                    <td className="px-4 py-2 font-mono text-xs">
+                      <Link
+                        href={`/servicing/${event.loan_id}/nsf`}
+                        className="text-muted-foreground hover:underline hover:text-foreground"
                       >
                         {event.loan_id}
                       </Link>
