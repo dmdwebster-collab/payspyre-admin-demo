@@ -13,10 +13,20 @@ import kpisJson from "./fixtures/kpis.json";
 import applicationsJson from "./fixtures/applications.json";
 import borrowersJson from "./fixtures/borrowers.json";
 import applicationStatusEventsJson from "./fixtures/application_status_events.json";
+import paymentSchedulesJson from "./fixtures/payment_schedules.json";
+import paymentScheduleEntriesJson from "./fixtures/payment_schedule_entries.json";
+import paymentsJson from "./fixtures/payments.json";
+import nsfEventsJson from "./fixtures/nsf_events.json";
 import type { Loan } from "../types/loan";
 import type { Vendor } from "../types/vendor";
 import type { Application, ApplicationStatusEvent } from "../types/application";
 import type { Borrower } from "../types/borrower";
+import type {
+  PaymentSchedule,
+  PaymentScheduleEntry,
+} from "../types/payment-schedule";
+import type { Payment } from "../types/payment";
+import type { NSFEvent } from "../types/nsf-event";
 
 // Cast JSON imports to typed arrays. The fixtures are derived from the
 // legacy v1 dataset and conform to the schemas in lib/types/.
@@ -26,6 +36,17 @@ const APPLICATIONS = applicationsJson as unknown as Application[];
 const BORROWERS = borrowersJson as unknown as Borrower[];
 const APPLICATION_STATUS_EVENTS =
   applicationStatusEventsJson as unknown as ApplicationStatusEvent[];
+
+// PR #4.1 — Servicing data model. Fixtures use a synthetic loan_id
+// (PS-SAMPLE-001) so the demonstrated schedule / payment / NSF flow is
+// internally consistent without conflicting with the legacy v1 loan
+// portfolio (every v1 loan is in a terminal state). Real schedules will
+// land via the TurnKey export adapter (PR #4.2).
+const PAYMENT_SCHEDULES = paymentSchedulesJson as unknown as PaymentSchedule[];
+const PAYMENT_SCHEDULE_ENTRIES =
+  paymentScheduleEntriesJson as unknown as PaymentScheduleEntry[];
+const PAYMENTS = paymentsJson as unknown as Payment[];
+const NSF_EVENTS = nsfEventsJson as unknown as NSFEvent[];
 
 export interface PortfolioKpis {
   summary: Record<string, number>;
@@ -117,6 +138,39 @@ export const repository = {
     return APPLICATION_STATUS_EVENTS.filter(
       (e) => e.application_id === application_id,
     ).sort((a, b) =>
+      a.occurred_at < b.occurred_at ? 1 : -1,
+    );
+  },
+
+  // -- Servicing data model (PR #4.1) -----------------------------------
+
+  async listPaymentSchedules(): Promise<PaymentSchedule[]> {
+    return PAYMENT_SCHEDULES;
+  },
+  async getActiveScheduleForLoan(
+    loan_id: string,
+  ): Promise<PaymentSchedule | undefined> {
+    return PAYMENT_SCHEDULES.find((s) => s.loan_id === loan_id && s.active);
+  },
+  async listEntriesForSchedule(
+    schedule_id: string,
+  ): Promise<PaymentScheduleEntry[]> {
+    return PAYMENT_SCHEDULE_ENTRIES.filter(
+      (e) => e.schedule_id === schedule_id,
+    ).sort((a, b) => a.period - b.period);
+  },
+  async listPaymentsForLoan(loan_id: string): Promise<Payment[]> {
+    return PAYMENTS.filter((p) => p.loan_id === loan_id).sort((a, b) =>
+      a.created_at < b.created_at ? 1 : -1,
+    );
+  },
+  async listNSFEventsForLoan(loan_id: string): Promise<NSFEvent[]> {
+    return NSF_EVENTS.filter((n) => n.loan_id === loan_id).sort((a, b) =>
+      a.occurred_at < b.occurred_at ? 1 : -1,
+    );
+  },
+  async listUnresolvedNSFEvents(): Promise<NSFEvent[]> {
+    return NSF_EVENTS.filter((n) => n.resolved_at === null).sort((a, b) =>
       a.occurred_at < b.occurred_at ? 1 : -1,
     );
   },

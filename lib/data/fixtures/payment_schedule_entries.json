@@ -1,0 +1,62 @@
+[
+  {
+    "id": "ent-sample-001-001",
+    "schedule_id": "sched-sample-001",
+    "period": 1,
+    "due_date": "2026-02-01",
+    "days_in_period": 30,
+    "expected_payment": 250.00,
+    "expected_interest": 0,
+    "expected_principal": 250.00,
+    "expected_balance_after": 750.00,
+    "status": "PAID",
+    "paid_amount": 250.00,
+    "paid_at": "2026-02-01",
+    "payment_id": "pay-sample-001"
+  },
+  {
+    "id": "ent-sample-001-002",
+    "schedule_id": "sched-sample-001",
+    "period": 2,
+    "due_date": "2026-03-03",
+    "days_in_period": 30,
+    "expected_payment": 250.00,
+    "expected_interest": 0,
+    "expected_principal": 250.00,
+    "expected_balance_after": 500.00,
+    "status": "PAID",
+    "paid_amount": 250.00,
+    "paid_at": "2026-03-03",
+    "payment_id": "pay-sample-002"
+  },
+  {
+    "id": "ent-sample-001-003",
+    "schedule_id": "sched-sample-001",
+    "period": 3,
+    "due_date": "2026-04-02",
+    "days_in_period": 30,
+    "expected_payment": 250.00,
+    "expected_interest": 0,
+    "expected_principal": 250.00,
+    "expected_balance_after": 250.00,
+    "status": "MISSED",
+    "paid_amount": 0,
+    "paid_at": null,
+    "payment_id": null
+  },
+  {
+    "id": "ent-sample-001-004",
+    "schedule_id": "sched-sample-001",
+    "period": 4,
+    "due_date": "2026-05-02",
+    "days_in_period": 30,
+    "expected_payment": 250.00,
+    "expected_interest": 0,
+    "expected_principal": 250.00,
+    "expected_balance_after": 0,
+    "status": "PENDING",
+    "paid_amount": 0,
+    "paid_at": null,
+    "payment_id": null
+  }
+]

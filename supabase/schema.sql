@@ -416,6 +416,117 @@ create table if not exists contact_preferences (
   updated_at timestamptz not null default now()
 );
 
+-- ============================================================================
+-- SERVICING DATA MODEL (PR #4.1)
+-- ============================================================================
+-- Persisted schedules, payments, and NSF events that drive the Servicing,
+-- Collections, and Reports workplaces (PR #4.3 → #4.6) and the TurnKey
+-- migration adapter (PR #4.2). Mirrors lib/types/payment-schedule.ts,
+-- lib/types/payment.ts, and lib/types/nsf-event.ts 1:1.
+-- ----------------------------------------------------------------------------
+
+-- A frozen amortization snapshot for a loan. Multiple versions per loan are
+-- allowed (renewal, refinance, hardship reset); `active = true` identifies
+-- the version currently driving billing. Generator inputs are stored on the
+-- row so the schedule is reproducible if challenged.
+create table if not exists payment_schedules (
+  id uuid primary key default gen_random_uuid(),
+  loan_id text not null references loans(id) on delete cascade,
+  schedule_version integer not null check (schedule_version > 0),
+  active boolean not null default true,
+  generated_at timestamptz not null,
+  -- Frozen generator inputs
+  original_principal numeric(12,2) not null check (original_principal > 0),
+  annual_rate numeric(6,3) not null check (annual_rate >= 0),
+  term_months integer not null check (term_months > 0),
+  payment_frequency text not null check (payment_frequency in ('Weekly','BiWeekly','SemiMonthly','Monthly')),
+  first_payment_date date not null,
+  -- Frozen generator outputs
+  number_of_payments integer not null check (number_of_payments > 0),
+  regular_payment numeric(12,2) not null check (regular_payment >= 0),
+  total_interest numeric(12,2) not null check (total_interest >= 0),
+  total_paid numeric(12,2) not null check (total_paid >= 0),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  unique (loan_id, schedule_version)
+);
+create index if not exists payment_schedules_loan_active_idx
+  on payment_schedules(loan_id) where active;
+
+-- One row per installment in a schedule.
+create table if not exists payment_schedule_entries (
+  id uuid primary key default gen_random_uuid(),
+  schedule_id uuid not null references payment_schedules(id) on delete cascade,
+  period integer not null check (period > 0),
+  due_date date not null,
+  days_in_period integer not null check (days_in_period > 0),
+  expected_payment numeric(12,2) not null check (expected_payment >= 0),
+  expected_interest numeric(12,2) not null check (expected_interest >= 0),
+  expected_principal numeric(12,2) not null check (expected_principal >= 0),
+  expected_balance_after numeric(12,2) not null check (expected_balance_after >= 0),
+  status text not null check (status in ('PENDING','PAID','PARTIAL','MISSED','WAIVED')),
+  paid_amount numeric(12,2) not null default 0 check (paid_amount >= 0),
+  paid_at date,
+  payment_id uuid, -- → payments(id); intentionally not a hard FK so a payment delete doesn't cascade
+  unique (schedule_id, period)
+);
+create index if not exists payment_schedule_entries_schedule_idx
+  on payment_schedule_entries(schedule_id, period);
+create index if not exists payment_schedule_entries_due_idx
+  on payment_schedule_entries(due_date) where status in ('PENDING','PARTIAL');
+
+-- A discrete inbound funds event. One Payment can post to many ledger rows
+-- (loan_transactions) once it lands in POSTED. RETURNED payments link to a
+-- corresponding nsf_events row. Mirrors the Zum Rails payment object.
+create table if not exists payments (
+  id uuid primary key default gen_random_uuid(),
+  loan_id text not null references loans(id) on delete cascade,
+  bank_account_id uuid references bank_accounts(id),
+  scheduled_for date,
+  posted_at timestamptz,
+  amount numeric(12,2) not null check (amount > 0),
+  method text not null check (method in (
+    'EFT','PAD','WIRE','CHEQUE','CASH','CARD','INTERNAL_TRANSFER'
+  )),
+  source text not null check (source in (
+    'BORROWER','COLLECTIONS','INSURANCE','VENDOR','INTERNAL'
+  )),
+  status text not null check (status in (
+    'SCHEDULED','PROCESSING','POSTED','RETURNED','FAILED','REVERSED','CANCELLED'
+  )),
+  external_ref text,
+  zum_payment_id text,
+  description text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+create index if not exists payments_loan_idx on payments(loan_id, scheduled_for);
+create index if not exists payments_status_idx on payments(status);
+create index if not exists payments_zum_idx on payments(zum_payment_id) where zum_payment_id is not null;
+
+-- A returned-payment record. Reason codes mirror Zum Rails / CPA-005 return
+-- codes. Resolution captures collections outcome — mirrors the workflow we'll
+-- build out in PR #4.4.
+create table if not exists nsf_events (
+  id uuid primary key default gen_random_uuid(),
+  loan_id text not null references loans(id) on delete cascade,
+  payment_id uuid not null references payments(id) on delete cascade,
+  occurred_at timestamptz not null,
+  reason_code text not null,
+  reason_description text,
+  nsf_fee_charged numeric(10,2) not null default 0 check (nsf_fee_charged >= 0),
+  bank_fee_recovered numeric(10,2) check (bank_fee_recovered is null or bank_fee_recovered >= 0),
+  retry_attempted boolean not null default false,
+  retry_payment_id uuid references payments(id),
+  retry_at date,
+  resolved_at timestamptz,
+  resolution text check (resolution in ('RECOVERED','WRITTEN_OFF','PROMISE_TO_PAY','IN_COLLECTIONS')),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+create index if not exists nsf_events_loan_idx on nsf_events(loan_id, occurred_at);
+create index if not exists nsf_events_unresolved_idx on nsf_events(loan_id) where resolved_at is null;
+
 -- ----------------------------------------------------------------------------
 -- TODO (PR #2/#3):
 --   * Enable RLS on every table; add policies scoped to vendor_id via JWT claim
