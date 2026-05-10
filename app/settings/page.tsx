@@ -42,24 +42,28 @@ export default function SettingsPage() {
 
       <StubBanner
         pr="PR #3"
-        description="Integrations — credentials and toggles for every external service."
+        description="Integrations — credentials and toggles for every external service. Existing relationships from the TurnKey deployment carry over (David, PR #1 review)."
         fields={[
-          "Equifax (credit bureau)",
-          "Flinks Capital (bank verification)",
-          "Zum Rails (EFT processor)",
-          "ID verification provider — TBD",
-          "DocuSign (e-signature)",
-          "Email (transactional)",
-          "SMS (transactional)",
-          "Webhook secrets",
+          "Equifax Canada (credit bureau)",
+          "Flinks Capital (instant bank verification)",
+          "Zum Rails (EFT / payment processing)",
+          "SignNow (e-signature)",
+          "SendGrid (transactional email)",
+          "MessageBird (SMS — not actively used yet)",
+          "Walnut (creditor / credit insurance)",
+          "KYC / KYB / ID Verification — TBD (Trulioo + Persona under evaluation)",
+          "Webhook secrets / signing keys",
+          "Future: Equifax PPSA Connect (lien registration)",
+          "Future: Equifax Credit Monitoring API (customer-facing)",
+          "Future: Zum Rails Card Issuance (secured cards)",
         ]}
       />
 
       <StubBanner
         pr="PR #3"
-        description="Loan Settings — product catalog and default terms per province."
+        description="Loan Settings — global standardized credit-product catalog (not customized per vendor). Each product carries its own verification requirements and reuse windows. Per David's PR #1.2 input, vendor-level product customization is dropped — every vendor presents the same standardized offerings."
         fields={[
-          "Credit products",
+          "Credit products (per CreditProduct in lib/types/credit-product.ts) — global, not per-vendor",
           "Min / max amount",
           "Min / max term (months)",
           "Rate bands per risk tier",
@@ -67,6 +71,11 @@ export default function SettingsPage() {
           "NSF fee",
           "Late fee",
           "DSI day-count (360 default)",
+          "Requires credit bureau (On / Off per product)",
+          "Requires bank verification (On / Off per product)",
+          "Credit Report validity window (days, default 30)",
+          "Bank Verification validity window (days, default 30)",
+          "Post-booking re-pull cadence (collections / portfolio review)",
         ]}
       />
 

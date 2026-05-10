@@ -75,6 +75,33 @@ create table if not exists borrowers (
 );
 
 -- Applications drive the Status Flow state machine (lib/status-flow.ts)
+-- Credit products: per-product config including verification toggles + reuse windows.
+-- Per David's PR #1 reply: "Certain credit products may not require a credit
+-- bureau at all" → requires_credit_bureau On/Off. Validity windows apply
+-- independently and default to 30 days; if a fresh result already exists,
+-- the system reuses it rather than initiating a new pull.
+create table if not exists credit_products (
+  id text primary key,
+  code text not null unique,
+  name text not null,
+  active boolean not null default true,
+  provinces text[] not null,
+  min_amount numeric(12,2) not null check (min_amount >= 0),
+  max_amount numeric(12,2) not null check (max_amount >= 0),
+  min_term_months integer not null check (min_term_months > 0),
+  max_term_months integer not null check (max_term_months > 0),
+  base_rate numeric(6,3) not null check (base_rate >= 0),
+  origination_fee_pct numeric(6,3) not null default 0 check (origination_fee_pct >= 0),
+  requires_credit_bureau boolean not null default true,
+  requires_bank_verification boolean not null default true,
+  credit_report_validity_days integer not null default 30 check (credit_report_validity_days > 0),
+  bank_verification_validity_days integer not null default 30 check (bank_verification_validity_days > 0),
+  post_booking_credit_repull_days integer check (post_booking_credit_repull_days is null or post_booking_credit_repull_days > 0),
+  post_booking_bank_repull_days integer check (post_booking_bank_repull_days is null or post_booking_bank_repull_days > 0),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
 create table if not exists applications (
   id text primary key, -- e.g. APP-2026-00042
   application_number text not null unique,
@@ -89,7 +116,7 @@ create table if not exists applications (
   province text not null check (province in ('BC','AB')),
   primary_borrower_id uuid references borrowers(id),
   co_borrower_id uuid references borrowers(id),
-  credit_product_id text,
+  credit_product_id text references credit_products(id),
   requested_amount numeric(12,2) not null check (requested_amount >= 0),
   offer_amount numeric(12,2),
   term_months integer,
@@ -97,6 +124,11 @@ create table if not exists applications (
   payment_frequency text check (payment_frequency in ('Weekly','BiWeekly','SemiMonthly','Monthly')),
   start_date date,
   first_payment_date date,
+  -- Verification freshness (per David's PR #1 reply). Each check has its own
+  -- "last completed at" timestamp; freshness is evaluated per credit product.
+  credit_report_completed_at timestamptz,
+  bank_verification_completed_at timestamptz,
+  application_verification_completed_at timestamptz,
   created_by text,
   created_at timestamptz not null default now(),
   submitted_at timestamptz,
@@ -353,3 +385,115 @@ create table if not exists contact_preferences (
 --   * credit_products + scorecards tables (Settings → Decision Engine)
 --   * province_settings table for compliant per-province operation
 -- ----------------------------------------------------------------------------
+
+-- ============================================================================
+-- VENDOR ONBOARDING (PR #1.2)
+-- ============================================================================
+
+-- Extend the vendors table with the onboarding lifecycle fields.
+-- We use IF NOT EXISTS so this script remains idempotent.
+alter table if exists vendors
+  add column if not exists onboarding_status text
+    check (onboarding_status in (
+      'INTEREST_REGISTERED','APPLICATION_SUBMITTED','KYB_IN_PROGRESS','KYB_REVIEW',
+      'BANKING_VERIFICATION','MSA_SENT','MSA_SIGNED','PROVISIONING','TRAINING','LIVE',
+      'DECLINED','WITHDRAWN','SUSPENDED','OFFBOARDED'
+    )),
+  add column if not exists kyb_provider text,
+  add column if not exists kyb_reference text,
+  add column if not exists kyb_completed_at timestamptz,
+  add column if not exists kyb_validity_days integer not null default 365,
+  add column if not exists banking_verified_at timestamptz,
+  add column if not exists banking_validity_days integer not null default 90,
+  add column if not exists msa_template_version text,
+  add column if not exists msa_envelope_id text,
+  add column if not exists msa_signed_at timestamptz,
+  add column if not exists applied_at timestamptz,
+  add column if not exists live_at timestamptz;
+
+-- Vendor application — captures the digital replacement of the paper
+-- Vendor-Application form. Drives the vendor onboarding state machine.
+create table if not exists vendor_applications (
+  id text primary key, -- e.g. "VAPP-2026-00042"
+  vendor_id text references vendors(id), -- populated post-provisioning
+  status text not null check (status in (
+    'INTEREST_REGISTERED','APPLICATION_SUBMITTED','KYB_IN_PROGRESS','KYB_REVIEW',
+    'BANKING_VERIFICATION','MSA_SENT','MSA_SIGNED','PROVISIONING','TRAINING','LIVE',
+    'DECLINED','WITHDRAWN','SUSPENDED','OFFBOARDED'
+  )),
+
+  -- 1.0 Business info (denormalized; copied to vendors table on provisioning)
+  business jsonb not null,
+  -- 3.0 Reps
+  primary_representative jsonb not null,
+  secondary_representative jsonb,
+  -- 4.0 Banking (Flinks or manual)
+  banking jsonb,
+  -- Required-document checklist (booleans)
+  documents jsonb not null default '{}'::jsonb,
+
+  authorized_signatory_name text,
+  signed_at timestamptz,
+
+  created_at timestamptz not null default now(),
+  submitted_at timestamptz,
+  decided_at timestamptz
+);
+
+create index if not exists vendor_applications_status_idx
+  on vendor_applications(status);
+create index if not exists vendor_applications_vendor_idx
+  on vendor_applications(vendor_id);
+
+-- Directors / officers attached to a vendor application (PII — restrict
+-- access via RLS in PR #2). Holds KYC fields used by Trulioo / Persona.
+create table if not exists vendor_directors (
+  id uuid primary key default gen_random_uuid(),
+  vendor_application_id text not null references vendor_applications(id) on delete cascade,
+  vendor_id text references vendors(id),
+
+  full_legal_name text not null,
+  position_title text not null,
+
+  date_of_birth date,
+  street_address text,
+  city text,
+  province text,
+  postal_code text,
+  phone text,
+  email text,
+
+  is_beneficial_owner boolean not null default false,
+  ownership_percent numeric(5,2) check (ownership_percent between 0 and 100),
+  is_authorized_signatory boolean not null default false,
+
+  kyc_provider text,
+  kyc_reference text,
+  kyc_result text check (kyc_result in ('PASS','REVIEW','FAIL','PENDING')),
+  kyc_completed_at timestamptz,
+
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index if not exists vendor_directors_application_idx
+  on vendor_directors(vendor_application_id);
+create index if not exists vendor_directors_vendor_idx
+  on vendor_directors(vendor_id);
+
+-- Append-only audit log for vendor onboarding state transitions.
+-- Mirrors application_status_events on the borrower side.
+create table if not exists vendor_onboarding_events (
+  id uuid primary key default gen_random_uuid(),
+  vendor_application_id text not null references vendor_applications(id) on delete cascade,
+  from_status text,
+  to_status text not null,
+  action text not null,
+  actor_id text not null,
+  actor_name text not null,
+  comments text,
+  occurred_at timestamptz not null default now()
+);
+
+create index if not exists vendor_onboarding_events_application_idx
+  on vendor_onboarding_events(vendor_application_id, occurred_at);

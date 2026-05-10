@@ -29,15 +29,29 @@ collections, and vendor-relations teams to originate and manage loans.
 
 ## Integrations (target — not all wired in PR #1)
 
-| Concern               | Provider                |
-| --------------------- | ----------------------- |
-| Credit bureau         | Equifax Canada          |
-| Bank verification     | Flinks Capital          |
-| EFT processor         | Zum Rails               |
-| ID verification       | **TBD — David to pick** |
-| E-signature           | DocuSign                |
-| Hosting               | Vercel (frontend)       |
-| Database              | Supabase                |
+Provider relationships confirmed by David Wilson during PR #1 review.
+Carryovers from the existing TurnKey deployment are marked **(existing)**.
+
+| Concern               | Provider                                            |
+| --------------------- | --------------------------------------------------- |
+| Credit bureau         | Equifax Canada                                      |
+| Bank verification     | Flinks Capital **(existing)**                       |
+| EFT / payments        | Zum Rails **(existing)**                            |
+| E-signature           | SignNow **(existing)** (in-house build long-term?)  |
+| Email                 | SendGrid **(existing)**                             |
+| SMS                   | MessageBird **(existing, not actively used)**       |
+| Credit insurance      | [Walnut](https://solutions.gowalnut.com/creditor-insurance) |
+| KYC / KYB / ID        | **TBD** — Trulioo + Persona under evaluation       |
+| Hosting               | Vercel (frontend)                                   |
+| Database              | Supabase                                            |
+
+### Future / expansion (architect for, don't build yet)
+
+| Concern                          | Provider                                              |
+| -------------------------------- | ----------------------------------------------------- |
+| Lien registration (PPSA)         | [Equifax PPSA Connect](https://www.equifax.ca/business/product/ppsa-connect/) |
+| Customer credit monitoring       | [Equifax Credit Monitoring API](https://www.equifax.com/business/product/credit-report-monitoring/) |
+| Secured card issuance            | [Zum Rails Card Issuance](https://www.zumrails.com/card-issuance) (long-term) |
 
 ## Hard rules
 
@@ -76,16 +90,35 @@ collections, and vendor-relations teams to originate and manage loans.
 
 ## PR roadmap
 
-- **PR #1 (this PR — foundation):** Next.js scaffolding, design tokens,
-  data model, Status Flow state machine, CPA codes, mock data
-  repository, dashboard / accounts / vendors / performance views,
-  workplace stubs, spec docs, draft Supabase schema.
-- **PR #2 (Originations end-to-end):** all 10 Originations tabs wired
-  to Supabase (Customer Details, Co-Borrower, Bank Details, Summary,
-  Initial Schedule, Workflow, Contacts, Documents, Bank Statements,
-  Comments) + RLS policies + Flinks/Zum Rails wire-up.
+- **PR #1 (foundation):** Next.js scaffolding, design tokens, data model,
+  Status Flow state machine, CPA codes, mock data repository, dashboard /
+  accounts / vendors / performance views, workplace stubs, spec docs,
+  draft Supabase schema.
+- **PR #1.1 (David's patch):** status-flow dependencies (stage 5 depends
+  on 3+4), per-product `requires_credit_bureau` toggle, per-check
+  freshness fields on `Application`, integration provider corrections.
+- **PR #1.2 (vendor onboarding scaffolding):** dedicated Vendor
+  Onboarding workplace, vendor onboarding state machine, vendor
+  application + directors + onboarding-events schema, standardized
+  global credit-product catalog (no per-vendor customization).
+- **PR #2 (Originations end-to-end):** all 10 Originations tabs wired to
+  Supabase (Customer Details, Co-Borrower, Bank Details, Summary, Initial
+  Schedule, Workflow, Contacts, Documents, Bank Statements, Comments) +
+  RLS policies + Flinks/Zum Rails wire-up.
 - **PR #3 (Underwriting / Servicing / Collections / Reports / Archive /
   Settings):** flesh out the remaining six workplaces.
+
+### Future tracks (not in PR #1–#3)
+
+A standing backlog of items captured from Michael's source docs lives
+in `docs/spec/future-tracks.md`. Notably:
+
+- **Vendor Training Platform / LMS** (Cardone-style) — wishlist for a
+  long time. The vendor onboarding state machine reserves a `TRAINING`
+  state so the LMS can plug in later without a model migration.
+- **Hardship / Decision Engine v2 / Compliance / Vendor Wallet /
+  Reporting upgrades** — see `future-tracks.md` for the full catalog,
+  tagged Track A–J for traceability.
 
 ## What lives where
 
@@ -96,6 +129,7 @@ app/                # Next.js App Router routes
   vendors/          # Vendor portfolio
   performance/      # Origination trend
   originations/     # PR #2 stub
+  vendor-onboarding/ # PR #1.2 stub
   underwriting/     # PR #3 stub
   servicing/        # PR #3 stub
   collections/      # PR #3 stub

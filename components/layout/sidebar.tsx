@@ -9,7 +9,7 @@ interface NavItem {
   label: string;
   href: string;
   icon: string;
-  status?: "live" | "pr2" | "pr3";
+  status?: "live" | "pr1_2" | "pr2" | "pr3";
 }
 
 const NAV_ITEMS: NavItem[] = [
@@ -20,6 +20,7 @@ const NAV_ITEMS: NavItem[] = [
 ];
 
 const WORKPLACE_ITEMS: NavItem[] = [
+  { label: "Vendor Onboarding", href: "/vendor-onboarding", icon: "◆", status: "pr1_2" },
   { label: "Originations", href: "/originations", icon: "✎", status: "pr2" },
   { label: "Underwriting", href: "/underwriting", icon: "✓", status: "pr3" },
   { label: "Servicing", href: "/servicing", icon: "⟳", status: "pr3" },
@@ -31,7 +32,8 @@ const WORKPLACE_ITEMS: NavItem[] = [
 
 function StatusTag({ status }: { status?: NavItem["status"] }) {
   if (!status || status === "live") return null;
-  const label = status === "pr2" ? "PR #2" : "PR #3";
+  const label =
+    status === "pr1_2" ? "PR #1.2" : status === "pr2" ? "PR #2" : "PR #3";
   return (
     <span className="ml-auto text-[9px] font-semibold tracking-wider text-gold-dim border border-line rounded px-1.5 py-px">
       {label}

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { PROVINCES } from "./enums";
+import { PROVINCES, VENDOR_ONBOARDING_STATUSES } from "./enums";
 
 /**
  * Vendor = a clinic / business that originates loans through PaySpyre.
@@ -12,6 +12,32 @@ export const VendorSchema = z.object({
   name: z.string(),
   province: z.enum(PROVINCES),
   status: z.enum(["ACTIVE", "INACTIVE", "PENDING", "SUSPENDED"]),
+
+  // Onboarding lifecycle (mirrors VendorOnboardingStatus enum). Set when the
+  // vendor is created via the onboarding flow; legacy / imported vendors may
+  // leave this null.
+  onboarding_status: z.enum(VENDOR_ONBOARDING_STATUSES).nullable().optional(),
+
+  // KYB / KYC freshness (per David's PR #1.2 input — same reuse model as the
+  // borrower side). Provider is whichever KYC vendor we wire up (Trulioo /
+  // Persona); kyb_reference is the third-party transaction id for audit.
+  kyb_provider: z.string().nullable().optional(),
+  kyb_reference: z.string().nullable().optional(),
+  kyb_completed_at: z.string().datetime().nullable().optional(),
+  kyb_validity_days: z.number().int().positive().default(365),
+
+  // Banking verification (Flinks Capital business account).
+  banking_verified_at: z.string().datetime().nullable().optional(),
+  banking_validity_days: z.number().int().positive().default(90),
+
+  // MSA execution.
+  msa_template_version: z.string().nullable().optional(),
+  msa_envelope_id: z.string().nullable().optional(), // SignNow envelope id
+  msa_signed_at: z.string().datetime().nullable().optional(),
+
+  // Lifecycle timestamps.
+  applied_at: z.string().datetime().nullable().optional(),
+  live_at: z.string().datetime().nullable().optional(),
   address: z.string().optional(),
   email: z.string().email().optional(),
   phone: z.string().optional(),
