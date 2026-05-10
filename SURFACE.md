@@ -1,84 +1,69 @@
-# SURFACE.md — PaySpyre Admin Surface
+# PaySpyre Admin — Surface Inventory
 
-## Surface Identity
+The admin console is organized into two top-level navigation groups:
+**Portfolio** views (read-mostly summaries) and **Workplaces** (queue-driven
+work surfaces tied to the Application / Loan lifecycle).
 
-| Field | Value |
-|-------|-------|
-| Surface name | Admin |
-| Repository | dmdwebster-collab/payspyre-admin-demo |
-| Visibility | Public (demo) |
-| Primary audience | PaySpyre internal team, practice administrators |
-| Authentication role | `admin`, `practice_admin` |
-| URL pattern | `admin.payspyre.com` (prod) / `localhost:3001` (dev) |
+## Portfolio (live in PR #1)
 
----
+| Route          | Purpose                                                  |
+| -------------- | -------------------------------------------------------- |
+| `/`            | Dashboard — KPIs, recent loans, status & term mix        |
+| `/accounts`    | All-loans table (424 loans from legacy data, sortable)   |
+| `/vendors`     | Vendor portfolio metrics (11 clinics)                    |
+| `/performance` | Monthly origination trend                                |
 
-## What This Surface Does
+## Workplaces (7 — stubbed in PR #1)
 
-The Admin surface is the operational control centre for PaySpyre. It gives PaySpyre staff and practice administrators full visibility and control over:
+| Workplace        | Route             | Status   | Tabs                                                                                                                                                  |
+| ---------------- | ----------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Originations** | `/originations`   | PR #2    | Customer Details, Co-Borrower, Bank Details, Summary, Initial Schedule, Workflow, Contacts, Documents, Bank Statements, Comments                      |
+| **Underwriting** | `/underwriting`   | PR #3    | _(inherits Originations tabs)_ + Risk Score, Verifications                                                                                            |
+| **Servicing**    | `/servicing`      | PR #3    | Extended Loan Header, Summary, Initial Schedule, Renewal, Transactions, Scheduled Transactions, Hardship                                              |
+| **Collections**  | `/collections`    | PR #3    | _(inherits Servicing tabs)_ + Action Plan, Promise to Pay                                                                                             |
+| **Reports**      | `/reports`        | PR #3    | Originations funnel, Portfolio, Delinquency, Vendor statements, Financial, Compliance                                                                 |
+| **Archive**      | `/archive`        | PR #3    | Read-only closed records (Paid / Refinanced / Charged-off / Declined / Withdrawn)                                                                     |
+| **Settings**     | `/settings`       | PR #3    | Accounts, Company Settings, Integrations, Loan Settings, Decision Engine, Notifications                                                               |
 
-- **Practice onboarding** — add new dental practices, configure their PaySpyre settings, assign Stripe merchant accounts
-- **Subscription management** — view, modify, and cancel practice subscriptions; billing history
-- **Call recording oversight** — view consent logs, recording retention schedules, audit trail
-- **Compliance reporting** — PHIPA/PIPEDA consent audit reports, data retention compliance status
-- **Cross-practice analytics** — aggregate payment volumes, call recording usage, feature adoption
-- **Integration health** — monitor Twilio, Stripe, n8n, and Supabase Edge Function status
-- **User management** — manage practice staff access levels and roles
+## Application Status Flow (live in PR #1)
 
----
-
-## How It Relates to Other Surfaces
-
-```
-PaySpyre Platform
-├── Admin (this surface)         — Operators + practice admins
-├── Consumer                     — Patients making payments
-├── Patient Portal               — Patients reviewing history/treatment
-└── Vendor Portal                — Partners, vendors, integrators
-```
-
-All surfaces share:
-- Supabase backend (same database, per-surface RLS policies)
-- Supabase Auth (role-scoped JWTs)
-- Tailwind + shadcn/ui design system
-- Zod validation library
-- GitHub Actions CI/CD
-
----
-
-## Admin-Specific Data Access
-
-The admin surface has broader read access than other surfaces, but it is still scoped:
-- PaySpyre staff (role: `admin`) can read all practices
-- Practice administrators (role: `practice_admin`) can only read their own `practice_id`
-- Neither role has direct access to individual patient PHI — only aggregate reports
-- All RLS policies enforce role-based scope — UI-only guards are not sufficient
-
----
-
-## Key Files in This Surface
+State machine in `lib/status-flow.ts`. 10 stages from David's status-flow PDF.
 
 ```
-/app                        — Next.js App Router
-  /app/(admin)/             — Admin-authenticated routes
-  /app/api/admin/           — Admin API routes
-/components/admin/          — Admin-specific UI components
-/components/shared/         — Shared PaySpyre components (cross-surface)
+APPLICATION_STARTED
+  → APPLICATION_SUBMITTED
+    → CREDIT_UNDERWRITING
+      ↳ CREDIT_REPORT          (parallel, repeatable)
+      ↳ BANK_VERIFICATION      (parallel, repeatable)
+      ↳ APPLICATION_VERIFICATION (parallel, repeatable)
+    → DECISION
+      → APPROVED → FUNDED
+      → DECLINED
+      → REFERRED → CREDIT_UNDERWRITING (loop)
 ```
 
----
+**Design note:** stages 3/4/5 (Credit Report, Bank Verification, Application
+Verification) are modeled as **parallel checks reachable from
+CREDIT_UNDERWRITING** rather than strict sequential states, because the spec
+PDF says they "may be performed at different steps … before approval." Flag
+for David's confirmation.
 
-## Environment Variables Required
+## Data model surface (PR #1)
 
-```bash
-# See .env.example for full list
-NEXT_PUBLIC_SUPABASE_URL=REPLACE_ME
-NEXT_PUBLIC_SUPABASE_ANON_KEY=REPLACE_ME
-SUPABASE_SERVICE_ROLE_KEY=REPLACE_ME    # server-side only
-STRIPE_SECRET_KEY=REPLACE_ME           # server-side only
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=REPLACE_ME
-TWILIO_ACCOUNT_SID=REPLACE_ME          # server-side only
-TWILIO_AUTH_TOKEN=REPLACE_ME           # server-side only
-```
+Defined in `lib/types/*` with Zod schemas. Mirrored in `supabase/schema.sql`.
 
-*Never commit real values. Set in Digital Ocean App Platform environment dashboard.*
+- `Borrower`, `Application`, `ApplicationStatusEvent`
+- `Loan`, `LoanTransaction`
+- `Vendor`
+- `BankAccount`, `BankVerification`, `BankStatementTransaction`
+- `Document`
+- `ContactLog`, `ContactPreferences`
+
+## What's deliberately **not** in PR #1
+
+- Auth (Supabase Auth wired in PR #2)
+- RLS policies on Supabase tables (drafted as TODO in `supabase/schema.sql`)
+- Flinks / Zum Rails / Equifax / DocuSign integrations
+- Borrower-facing portal (separate repo)
+- Vendor-facing portal (separate repo)
+- Marketplace surface (not in spec — flagged for scoping)

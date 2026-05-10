@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PaySpyre Admin</title>
+<link rel="stylesheet" href="style.css">
+<link rel="icon" type="image/png" href="payspyre-logo.png">
+</head>
+<body>
+<div id="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <img src="payspyre-logo.png" alt="PaySpyre" class="brand-logo">
+      <div class="brand-sub">Admin Console</div>
+    </div>
+    <nav class="nav">
+      <a href="#/" data-route="dashboard" class="nav-item">
+        <span class="nav-icon">▤</span><span>Dashboard</span>
+      </a>
+      <a href="#/accounts" data-route="accounts" class="nav-item">
+        <span class="nav-icon">≡</span><span>Accounts</span>
+      </a>
+      <a href="#/vendors" data-route="vendors" class="nav-item">
+        <span class="nav-icon">◉</span><span>Vendors</span>
+      </a>
+      <a href="#/performance" data-route="performance" class="nav-item">
+        <span class="nav-icon">◈</span><span>Performance</span>
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="footer-line">DSI · 360-day year</div>
+      <div class="footer-line">BC / AB Dental Finance</div>
+    </div>
+  </aside>
+  <main class="main">
+    <header class="topbar">
+      <div class="topbar-title" id="page-title">Dashboard</div>
+      <div class="topbar-meta">
+        <span class="chip chip-green">LIVE PORTFOLIO</span>
+        <span class="chip">CAD</span>
+      </div>
+    </header>
+    <div id="view" class="view"></div>
+  </main>
+</div>
+<script src="app.js"></script>
+</body>
+</html>

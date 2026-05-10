@@ -1,145 +1,118 @@
-# CLAUDE.md — PaySpyre Admin Demo
-<!-- Read this file before every session. It is your briefing document for this project. -->
+# PaySpyre Admin — Engineering Notes
 
-## Project Overview
+## Product
 
-PaySpyre is a dental-focused payments and call intelligence platform. This repository is the **Admin Surface** — the internal operator dashboard for PaySpyre staff and practice administrators. It provides practice onboarding, subscription management, call recording oversight, compliance reporting, and analytics across all connected dental practices.
+**PaySpyre Financial** is a Canadian dental patient-financing lender. This
+repo is the **internal admin console** used by underwriting, servicing,
+collections, and vendor-relations teams to originate and manage loans.
 
-**Surface:** Admin  
-**Audience:** PaySpyre internal team + practice administrators  
-**Related surfaces:** consumer-demo (patient), patient-portal-demo (patient portal), vendor-portal-demo (vendor/partner)
+- **Owner:** Dr. Michael Webster
+- **CEO:** David Wilson
+- **Markets:** British Columbia, Alberta (CAD only)
+- **Customers:** dental clinics ("vendors") that offer PaySpyre financing to
+  their patients ("borrowers") at point of treatment
+- **Borrower-facing channel:** lives in `payspyre-patient-portal-demo`
+- **Vendor-facing channel:** lives in `payspyre-vendor-portal-demo`
 
-See `SURFACE.md` for full surface documentation.
+## Stack
 
-Owner: Dr. Michael Webster  
-Status: Active development (demo)  
-Repository: public — dmdwebster-collab/payspyre-admin-demo
+- **Framework:** Next.js 14 (App Router) + React 18
+- **Language:** TypeScript (strict)
+- **Styling:** Tailwind 3.4 (design tokens in `tailwind.config.ts`)
+- **UI:** shadcn-style primitives in `components/ui/*` over Radix
+- **Validation:** Zod 3
+- **Data (PR #1):** typed mock repository in `lib/data/repository.ts`
+  reading JSON fixtures
+- **Data (PR #2+):** Supabase (Postgres + RLS + Auth) — schema draft in
+  `supabase/schema.sql`
+- **Tests:** Vitest
 
----
+## Integrations (target — not all wired in PR #1)
 
-## PaySpyre Architecture (Shared Across All Surfaces)
+| Concern               | Provider                |
+| --------------------- | ----------------------- |
+| Credit bureau         | Equifax Canada          |
+| Bank verification     | Flinks Capital          |
+| EFT processor         | Zum Rails               |
+| ID verification       | **TBD — David to pick** |
+| E-signature           | DocuSign                |
+| Hosting               | Vercel (frontend)       |
+| Database              | Supabase                |
 
-PaySpyre is a multi-surface SaaS product. All surfaces share:
-- Same Supabase backend with per-practice RLS isolation
-- Same auth provider (Supabase Auth)
-- Same design system (Tailwind + shadcn/ui)
-- Same validation library (Zod)
-- Same API convention (Next.js API routes under `/app/api/`)
+## Hard rules
 
-Each surface has its own Next.js app with role-scoped routing and RLS-enforced data access.
+1. **No secrets in repo.** Never commit `.env*` files. Use Vercel /
+   Supabase environment variables in production.
+2. **PIPEDA + provincial privacy law.** All borrower PII access must be
+   audit-logged; bank-account numbers masked except for users with the
+   explicit `bank.reveal` permission.
+3. **RLS on every Supabase table** (deferred to PR #2 — schema currently
+   has tables without policies; flagged in `supabase/schema.sql`).
+4. **All input validated with Zod** at the route boundary. Types in
+   `lib/types/*` are the single source of truth — DDL in
+   `supabase/schema.sql` mirrors them.
+5. **Currency: CAD.** Always render via `formatCAD()` from `lib/utils.ts`.
+6. **Day-count: 360-day DSI.** Hard-coded across the amortization /
+   schedule logic (introduced in PR #2 servicing work).
+7. **Status transitions go through the state machine.** Never write a raw
+   status update — use `executeAction()` in `lib/status-flow.ts` so the
+   audit event is emitted.
+8. **No inline `style` props.** Tailwind utility classes only.
+9. **Server components by default.** Mark `'use client'` only when the
+   component needs hooks / browser APIs (currently only `Sidebar`).
+10. **Mock-data layer must keep shape compatible with the future Supabase
+    client** — accessors in `lib/data/repository.ts` return the same
+    types the Supabase client will return.
 
----
+## Conventions
 
-## Tech Stack
+- `lib/types/index.ts` is the barrel; import types from `@/lib/types`
+- Currency / percent / int formatting → `lib/utils.ts`
+- Status flow → `lib/status-flow.ts` (pure, fully unit-tested)
+- CPA EFT codes → `lib/cpa-codes.ts`
+- File path alias: `@/* → ./*`
+- The legacy v1 static demo lives under `legacy/v1-static-demo/` — kept
+  for reference only; excluded from `tsconfig` and `eslint`
 
-| Layer | Technology |
-|-------|-----------|
-| Frontend | Next.js 14 (App Router), React, TypeScript, Tailwind CSS |
-| UI Components | shadcn/ui |
-| Backend | Next.js API Routes + Supabase Edge Functions |
-| Database | Supabase (Postgres with RLS, per-practice isolation) |
-| Auth | Supabase Auth (JWT, role-scoped) |
-| Payments | Stripe (hosted elements only — never roll your own card capture) |
-| Call Recording | Twilio Voice |
-| Transcription | OpenAI Whisper or Azure Speech (server-side only) |
-| AI Summary | Claude API — claude-sonnet-4-5 |
-| Hosting | Digital Ocean App Platform |
-| CDN/DNS | Cloudflare |
-| CI/CD | GitHub Actions |
-| Validation | Zod (all inputs) |
+## PR roadmap
 
----
+- **PR #1 (this PR — foundation):** Next.js scaffolding, design tokens,
+  data model, Status Flow state machine, CPA codes, mock data
+  repository, dashboard / accounts / vendors / performance views,
+  workplace stubs, spec docs, draft Supabase schema.
+- **PR #2 (Originations end-to-end):** all 10 Originations tabs wired
+  to Supabase (Customer Details, Co-Borrower, Bank Details, Summary,
+  Initial Schedule, Workflow, Contacts, Documents, Bank Statements,
+  Comments) + RLS policies + Flinks/Zum Rails wire-up.
+- **PR #3 (Underwriting / Servicing / Collections / Reports / Archive /
+  Settings):** flesh out the remaining six workplaces.
 
-## Critical Rules — Payments + PHI / PHIPA / HIPAA
+## What lives where
 
-### NEVER:
-- Log or store raw card numbers, CVVs, or PANs — tokenisation only via Stripe
-- Store call recordings without explicit patient consent captured in the system
-- Pass payment data through Claude API (Claude does not process PCI-scoped data)
-- Store call recording audio files outside of encrypted Supabase Storage
-- Hard-code any payment processor API keys or Twilio credentials
-- Bypass Supabase RLS — all queries must be scoped by `practice_id`
-- Commit `.env`, `.env.local`, or any real credentials
-- Use real patient data in development — synthetic/mock data only until Anthropic Enterprise BAA
-
-### ALWAYS:
-- Use Stripe hosted fields/elements for card capture
-- Capture and log call recording consent with timestamp before recording starts
-- Pass only transcription text (not audio) to Claude API
-- Tag all Claude API calls with `session_id` for cost attribution
-- Scope every Supabase query by `practice_id`
-- Validate all inputs server-side with Zod
-
----
-
-## Planning Process
-
-**Before writing any code:**
-1. Enter plan mode
-2. List all files to be changed
-3. Check which surface-specific components are affected (admin-scoped only)
-4. Any change to payment flow or call recording requires plan mode + security plugin review
-5. Write task checklist and wait for approval
-
-**Subagent rule:** Propose breakdown for >3 file changes.
-
----
-
-## Code Conventions
-
-- Tailwind CSS only — no inline styles
-- Server components by default — `'use client'` only when necessary
-- shadcn/ui for all form inputs, dialogs, tables
-- Zod validation on every input (client + server)
-- Admin-specific components in `/components/admin/`
-- Shared PaySpyre components in `/components/shared/`
-
----
-
-## Commands
-
-### Auto-Approve (safe)
-```bash
-npm run lint
-npm run typecheck
-npm run test
-git status
-git diff
-ls
-cat [file]
-supabase gen types typescript --local
-curl [read-only public endpoint]
 ```
-
-### Require Approval
-```bash
-git commit
-git push
-supabase db push
-npm install [package]
-# editing any .env file
-# deleting any file
+app/                # Next.js App Router routes
+  page.tsx          # Dashboard
+  accounts/         # All loans
+  vendors/          # Vendor portfolio
+  performance/      # Origination trend
+  originations/     # PR #2 stub
+  underwriting/     # PR #3 stub
+  servicing/        # PR #3 stub
+  collections/      # PR #3 stub
+  reports/          # PR #3 stub
+  archive/          # PR #3 stub
+  settings/         # PR #3 stub
+components/
+  layout/           # Sidebar + topbar
+  ui/               # shadcn-style primitives
+lib/
+  types/            # Zod schemas + TS types
+  data/             # Repository + JSON fixtures
+  status-flow.ts    # Application state machine
+  cpa-codes.ts      # CPA EFT category map
+  utils.ts          # cn, formatCAD, etc.
+supabase/
+  schema.sql        # DDL (RLS TODO)
+docs/spec/          # David's spec docs (source of truth)
+legacy/             # v1 static demo (read-only reference)
 ```
-
----
-
-## Model Selection Guidance
-
-| Task | Model |
-|------|-------|
-| Architecture planning | claude-opus-4-5 (plan mode) |
-| Feature implementation | claude-sonnet-4-5 |
-| Code review | claude-sonnet-4-5 |
-| High-volume ops | claude-haiku-4-5 |
-
-**Rule:** Opus plan → Sonnet execute → Sonnet review.
-
----
-
-## Mistake Prevention Log
-<!-- Append every Claude error here. Never delete entries. -->
-- Payment amounts must always be validated server-side — never trust client-provided amounts
-- Consent webhook must fire before recording webhook — order matters
-- Claude summaries must NOT include payment amounts or card type
-- Always check RLS is enforcing `practice_id` isolation before any payment query
-- Admin routes must verify `admin` or `practice_admin` role — never rely on UI-only access control
