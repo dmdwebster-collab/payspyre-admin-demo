@@ -78,7 +78,8 @@ See §7 below for the revised PR ladder reflecting cutover priorities.
 | PR #1.2 | `redesign/vendor-onboarding-pr1-2` | [#4](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/4) | Complete — vendor onboarding scaffolding + standardized credit products (no per-vendor customization) |
 | PR #2 | `redesign/originations-pr2` | [#5](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/5) | Complete — Originations workplace end-to-end (worklist + Loan Header + all 10 tabs) |
 | PR #3 | `redesign/section-stubs-pr3` | [#6](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/6) | Complete — 6 sections scaffolded (Underwriting / Servicing / Collections / Reports / Archive / Settings) with worklist previews + StubBanner placeholders |
-| **PR #3.1** | **`redesign/credit-product-refactor-pr3-1`** | **[#7](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/7)** | **Open as draft, awaiting David's review** — credit product refactor: brackets + multi-frequency |
+| PR #3.1 | `redesign/credit-product-refactor-pr3-1` | [#7](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/7) | Open as draft (David design-locked per §10) — credit product refactor: brackets + multi-frequency |
+| **PR #4.1** | **`redesign/servicing-data-model-pr4-1`** | _open in this PR_ | **In progress** — Servicing data model: PaymentSchedule, PaymentScheduleEntry, Payment, NSFEvent + helpers + SQL + fixtures |
 
 Each PR is stacked: `--base` of the next branch is the previous branch.
 
@@ -86,12 +87,14 @@ Each PR is stacked: `--base` of the next branch is the previous branch.
 
 ## 4. Where you are right now
 
-**Current branch:** `redesign/credit-product-refactor-pr3-1`
-**Last commit:** `b7c4c59 PR #3.1: Update PR map with credit-product refactor entry`
-**Tests:** 96/96 passing (5 vitest files)
-**Build:** `npm run build` clean, all 22 routes render
+**Current branch:** `redesign/servicing-data-model-pr4-1`
+**Stacked on:** `redesign/credit-product-refactor-pr3-1`
+**Tests:** 119/119 passing (6 vitest files — adds `lib/servicing.test.ts`)
+**Build:** `npm run build` clean
 
-**PR #3.1 is in David's court for review.** Do not start PR #4 until he confirms the bracket shape — see `docs/spec/credit-product-architecture.md` for his verbatim direction. The Slack draft asking him to review is saved in Michael's "Drafts & Sent" (DM channel `D01UA4MUPAN`); Michael needs to manually send it.
+**PR #3.1 is in David's court but design-locked** per §10. PR #4.1
+unblocks PR #4.2 (TurnKey export adapter) which is the top cutover
+priority. Do not stop on PR #3.1 review.
 
 ---
 

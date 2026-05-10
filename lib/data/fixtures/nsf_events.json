@@ -1,0 +1,19 @@
+[
+  {
+    "id": "nsf-sample-001",
+    "loan_id": "PS-SAMPLE-001",
+    "payment_id": "pay-sample-003",
+    "occurred_at": "2026-04-04T08:30:00.000Z",
+    "reason_code": "NSF",
+    "reason_description": "Insufficient funds in borrower account",
+    "nsf_fee_charged": 45.00,
+    "bank_fee_recovered": null,
+    "retry_attempted": false,
+    "retry_payment_id": null,
+    "retry_at": null,
+    "resolved_at": null,
+    "resolution": null,
+    "created_at": "2026-04-04T08:30:00.000Z",
+    "updated_at": "2026-04-04T08:30:00.000Z"
+  }
+]

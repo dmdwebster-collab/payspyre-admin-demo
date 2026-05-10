@@ -120,10 +120,22 @@ Carryovers from the existing TurnKey deployment are marked **(existing)**.
   normalized child tables (`credit_product_amount_brackets`,
   `credit_product_term_bands`). Direction documented verbatim from David
   Wilson in `docs/spec/credit-product-architecture.md`.
-- **PR #4+ (workplace build-out):** flesh out the actual tab UIs in
-  Underwriting, Servicing, Collections, Reports, Archive, and Settings
-  (every `StubBanner` becomes a real tab). Will need a loans + payment_schedule
-  + transactions data model to support Servicing/Collections.
+- **PR #4.1 (Servicing data model):** persisted servicing entities to
+  unblock the cutover from TurnKey. Adds `PaymentSchedule` +
+  `PaymentScheduleEntry` (frozen amortization snapshots, multiple
+  versions per loan), `Payment` (Zum Rails-compatible inbound funds
+  lifecycle), and `NSFEvent` (returned-payment record with reason +
+  retry state). Helpers in `lib/servicing.ts` build schedules from
+  loans, allocate posted payments to entries, mark missed entries, and
+  construct NSF events. SQL mirror in `supabase/schema.sql`. Design doc
+  in `docs/spec/servicing-data-model.md`.
+- **PR #4.2 (TurnKey export adapter):** per-entity import adapters,
+  reconciliation report generator, idempotent migration runner. Top
+  cutover priority — gates everything downstream.
+- **PR #4.3+ (workplace build-out):** flesh out the actual tab UIs in
+  Servicing, Collections, Underwriting, Reports, Archive, and Settings
+  (every `StubBanner` becomes a real tab). Now unblocked by the PR #4.1
+  data model.
 
 ### Future tracks (not in PR #1–#3)
 
