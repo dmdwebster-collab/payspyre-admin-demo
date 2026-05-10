@@ -29,15 +29,29 @@ collections, and vendor-relations teams to originate and manage loans.
 
 ## Integrations (target — not all wired in PR #1)
 
-| Concern               | Provider                |
-| --------------------- | ----------------------- |
-| Credit bureau         | Equifax Canada          |
-| Bank verification     | Flinks Capital          |
-| EFT processor         | Zum Rails               |
-| ID verification       | **TBD — David to pick** |
-| E-signature           | DocuSign                |
-| Hosting               | Vercel (frontend)       |
-| Database              | Supabase                |
+Provider relationships confirmed by David Wilson during PR #1 review.
+Carryovers from the existing TurnKey deployment are marked **(existing)**.
+
+| Concern               | Provider                                            |
+| --------------------- | --------------------------------------------------- |
+| Credit bureau         | Equifax Canada                                      |
+| Bank verification     | Flinks Capital **(existing)**                       |
+| EFT / payments        | Zum Rails **(existing)**                            |
+| E-signature           | SignNow **(existing)** (in-house build long-term?)  |
+| Email                 | SendGrid **(existing)**                             |
+| SMS                   | MessageBird **(existing, not actively used)**       |
+| Credit insurance      | [Walnut](https://solutions.gowalnut.com/creditor-insurance) |
+| KYC / KYB / ID        | **TBD** — Trulioo + Persona under evaluation       |
+| Hosting               | Vercel (frontend)                                   |
+| Database              | Supabase                                            |
+
+### Future / expansion (architect for, don't build yet)
+
+| Concern                          | Provider                                              |
+| -------------------------------- | ----------------------------------------------------- |
+| Lien registration (PPSA)         | [Equifax PPSA Connect](https://www.equifax.ca/business/product/ppsa-connect/) |
+| Customer credit monitoring       | [Equifax Credit Monitoring API](https://www.equifax.com/business/product/credit-report-monitoring/) |
+| Secured card issuance            | [Zum Rails Card Issuance](https://www.zumrails.com/card-issuance) (long-term) |
 
 ## Hard rules
 

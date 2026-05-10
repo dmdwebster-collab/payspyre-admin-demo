@@ -28,6 +28,16 @@ export const ApplicationSchema = z.object({
   start_date: z.string().nullable().optional(),
   first_payment_date: z.string().nullable().optional(),
 
+  // Verification freshness tracking (per David's PR #1 reply).
+  // Each check has an independent "last completed" timestamp; freshness is
+  // evaluated against the credit-product's validity window via
+  // `isCheckFresh()` from `./credit-product`. Application Verification
+  // depends on having fresh Credit Report (when required) AND Bank
+  // Verification results — see lib/status-flow.ts.
+  credit_report_completed_at: z.string().datetime().nullable().optional(),
+  bank_verification_completed_at: z.string().datetime().nullable().optional(),
+  application_verification_completed_at: z.string().datetime().nullable().optional(),
+
   // Audit
   created_by: z.string().optional(),
   created_at: z.string().datetime(),
