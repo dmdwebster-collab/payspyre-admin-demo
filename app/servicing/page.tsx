@@ -51,6 +51,20 @@ export default async function ServicingPage() {
         ]}
       />
 
+      <a
+        href="/servicing/PS-SAMPLE-001/schedule"
+        className="block rounded-lg border border-gold-dim/40 bg-navy-700/40 p-4 text-sm text-ink-dim hover:border-gold-dim hover:bg-navy-700"
+      >
+        <div className="text-[11px] font-semibold tracking-wider text-gold uppercase mb-1">
+          PR #4.3 · Servicing Loan view (live)
+        </div>
+        Demo loan{" "}
+        <span className="font-mono text-gold">PS-SAMPLE-001</span> →
+        Schedule / Payments / NSF / Activity. Wired to PR #4.1 fixtures
+        (4-period schedule, one POSTED + one RETURNED + one SCHEDULED
+        payment, one open NSF event).
+      </a>
+
       <StubBanner
         pr="PR #4"
         description="Extended Loan Header — adds servicing-specific fields on top of the originations header. Profile photo, preferred contact, outstanding principal, interest due, fees due, next installment, past due, total amount due, current DPD, account-due-as-of date, amount-to-move, add-on fee balance."
