@@ -129,13 +129,19 @@ Carryovers from the existing TurnKey deployment are marked **(existing)**.
   loans, allocate posted payments to entries, mark missed entries, and
   construct NSF events. SQL mirror in `supabase/schema.sql`. Design doc
   in `docs/spec/servicing-data-model.md`.
-- **PR #4.2 (TurnKey export adapter):** per-entity import adapters,
-  reconciliation report generator, idempotent migration runner. Top
-  cutover priority — gates everything downstream.
+- **PR #4.2 (TurnKey export adapter):** pure migration runner over an
+  in-memory `TurnKeyExport`. Per-entity adapters (borrower, application,
+  loan, schedule, transaction, document) with deterministic UUIDv5 ids
+  for idempotent re-runs. Three schedule strategies (`use_export` /
+  `regenerate` / `auto`) so the dual-run period can spot divergence.
+  Reconciliation report compares source vs imported on per-entity counts
+  and money totals. Transport/parser + DB upsert + cutover dashboards
+  intentionally out of scope (see `docs/spec/turnkey-migration.md` §3
+  for the open questions that gate them).
 - **PR #4.3+ (workplace build-out):** flesh out the actual tab UIs in
   Servicing, Collections, Underwriting, Reports, Archive, and Settings
   (every `StubBanner` becomes a real tab). Now unblocked by the PR #4.1
-  data model.
+  data model + PR #4.2 migration runner.
 
 ### Future tracks (not in PR #1–#3)
 

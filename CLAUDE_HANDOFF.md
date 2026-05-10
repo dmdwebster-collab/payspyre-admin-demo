@@ -79,7 +79,8 @@ See §7 below for the revised PR ladder reflecting cutover priorities.
 | PR #2 | `redesign/originations-pr2` | [#5](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/5) | Complete — Originations workplace end-to-end (worklist + Loan Header + all 10 tabs) |
 | PR #3 | `redesign/section-stubs-pr3` | [#6](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/6) | Complete — 6 sections scaffolded (Underwriting / Servicing / Collections / Reports / Archive / Settings) with worklist previews + StubBanner placeholders |
 | PR #3.1 | `redesign/credit-product-refactor-pr3-1` | [#7](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/7) | Open as draft (David design-locked per §10) — credit product refactor: brackets + multi-frequency |
-| **PR #4.1** | **`redesign/servicing-data-model-pr4-1`** | _open in this PR_ | **In progress** — Servicing data model: PaymentSchedule, PaymentScheduleEntry, Payment, NSFEvent + helpers + SQL + fixtures |
+| PR #4.1 | `redesign/servicing-data-model-pr4-1` | [#8](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/8) | Open as draft — Servicing data model: PaymentSchedule, PaymentScheduleEntry, Payment, NSFEvent |
+| **PR #4.2** | **`redesign/turnkey-export-adapter-pr4-2`** | _open in this PR_ | **In progress** — TurnKey export adapter: per-entity adapters, deterministic UUIDv5 ids, schedule strategies, reconciliation report |
 
 Each PR is stacked: `--base` of the next branch is the previous branch.
 
@@ -87,14 +88,15 @@ Each PR is stacked: `--base` of the next branch is the previous branch.
 
 ## 4. Where you are right now
 
-**Current branch:** `redesign/servicing-data-model-pr4-1`
-**Stacked on:** `redesign/credit-product-refactor-pr3-1`
-**Tests:** 119/119 passing (6 vitest files — adds `lib/servicing.test.ts`)
+**Current branch:** `redesign/turnkey-export-adapter-pr4-2`
+**Stacked on:** `redesign/servicing-data-model-pr4-1`
+**Tests:** 148/148 passing (7 vitest files — adds `lib/migration/turnkey-import.test.ts`)
 **Build:** `npm run build` clean
 
-**PR #3.1 is in David's court but design-locked** per §10. PR #4.1
-unblocks PR #4.2 (TurnKey export adapter) which is the top cutover
-priority. Do not stop on PR #3.1 review.
+**PR #3.1 is in David's court but design-locked** per §10. PR #4.1 (#8)
+landed the Servicing data model; PR #4.2 (this PR) wraps the TurnKey
+migration runner. Next up: PR #4.3 (Servicing workplace) — UI on top of
+PR #4.1.
 
 ---
 
