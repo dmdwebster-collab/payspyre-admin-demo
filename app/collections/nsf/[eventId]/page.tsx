@@ -8,9 +8,12 @@ import {
   CardContent,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { StubBanner } from "@/components/ui/stub-banner";
 import { formatCAD } from "@/lib/utils";
 import { daysSince, dpdBucket } from "@/lib/collections";
+import {
+  resolveNSFEventAction,
+  retryNSFPaymentAction,
+} from "./actions";
 
 interface Props {
   params: Promise<{ eventId: string }>;
@@ -214,96 +217,182 @@ export default async function NSFEventDetailPage({ params }: Props) {
         <CardHeader>
           <CardTitle>Resolve</CardTitle>
           <p className="mt-1 text-xs text-muted-foreground">
-            Action panel scaffold. PR #4.4.2 wires these into Server Actions
-            that write `nsf_events.resolution` + `resolved_at` and
-            (optionally) create a fresh retry Payment.
+            Wired to Next 14 Server Actions (PR #4.4.2). Mock-data
+            mutators in `lib/data/repository.ts` persist within the
+            server process; production swaps for a Supabase upsert with
+            no Server Action change.
           </p>
         </CardHeader>
         <CardContent>
-          <fieldset
-            disabled
-            className="grid grid-cols-1 gap-4 sm:grid-cols-2 opacity-60"
-          >
-            <div>
-              <label
-                htmlFor="resolution"
-                className="text-xs text-muted-foreground tracking-wider uppercase"
-              >
-                Resolution
-              </label>
-              <select
-                id="resolution"
-                className="mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                defaultValue=""
-              >
-                <option value="" disabled>
-                  Choose a resolution…
-                </option>
-                <option value="RECOVERED">RECOVERED</option>
-                <option value="PROMISE_TO_PAY">PROMISE_TO_PAY</option>
-                <option value="IN_COLLECTIONS">IN_COLLECTIONS</option>
-                <option value="WRITTEN_OFF">WRITTEN_OFF</option>
-              </select>
+          {event.resolved_at ? (
+            <div className="rounded-md border border-line bg-muted/30 px-4 py-3 text-sm">
+              Already resolved as{" "}
+              <span className="font-mono font-semibold">
+                {event.resolution}
+              </span>{" "}
+              on{" "}
+              <span className="font-mono">{fmt(event.resolved_at)}</span>.
             </div>
-            <div>
-              <label
-                htmlFor="resolved-at"
-                className="text-xs text-muted-foreground tracking-wider uppercase"
-              >
-                Resolution date
-              </label>
-              <input
-                id="resolved-at"
-                type="date"
-                className="mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-              />
-            </div>
-            <div className="sm:col-span-2">
-              <label
-                htmlFor="comments"
-                className="text-xs text-muted-foreground tracking-wider uppercase"
-              >
-                Comments
-              </label>
-              <textarea
-                id="comments"
-                rows={3}
-                placeholder="Operator notes…"
-                className="mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-              />
-            </div>
-            <div className="sm:col-span-2 flex items-center gap-3">
-              <button
-                type="button"
-                className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-              >
-                Mark resolved
-              </button>
-              <button
-                type="button"
-                className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-muted"
-              >
-                Retry payment
-              </button>
-              <span className="text-xs text-muted-foreground">
-                (disabled — Server Actions land in PR #4.4.2)
-              </span>
-            </div>
-          </fieldset>
+          ) : (
+            <form
+              action={resolveNSFEventAction.bind(null, event.id)}
+              className="grid grid-cols-1 gap-4 sm:grid-cols-2"
+            >
+              <div>
+                <label
+                  htmlFor="resolution"
+                  className="text-xs text-muted-foreground tracking-wider uppercase"
+                >
+                  Resolution
+                </label>
+                <select
+                  id="resolution"
+                  name="resolution"
+                  required
+                  defaultValue=""
+                  className="mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                >
+                  <option value="" disabled>
+                    Choose a resolution…
+                  </option>
+                  <option value="RECOVERED">RECOVERED</option>
+                  <option value="PROMISE_TO_PAY">PROMISE_TO_PAY</option>
+                  <option value="IN_COLLECTIONS">IN_COLLECTIONS</option>
+                  <option value="WRITTEN_OFF">WRITTEN_OFF</option>
+                </select>
+              </div>
+              <div>
+                <label
+                  htmlFor="resolved_on"
+                  className="text-xs text-muted-foreground tracking-wider uppercase"
+                >
+                  Resolution date (optional)
+                </label>
+                <input
+                  id="resolved_on"
+                  name="resolved_on"
+                  type="date"
+                  className="mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                />
+              </div>
+              <div className="sm:col-span-2">
+                <label
+                  htmlFor="comments"
+                  className="text-xs text-muted-foreground tracking-wider uppercase"
+                >
+                  Comments
+                </label>
+                <textarea
+                  id="comments"
+                  name="comments"
+                  rows={3}
+                  placeholder="Operator notes…"
+                  className="mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                />
+              </div>
+              <div className="sm:col-span-2">
+                <button
+                  type="submit"
+                  className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+                >
+                  Mark resolved
+                </button>
+              </div>
+            </form>
+          )}
         </CardContent>
       </Card>
 
-      <StubBanner
-        pr="PR #4.4"
-        description="Wire the resolution form to a Next 14 Server Action that writes nsf_events.resolution + resolved_at, and the retry button to one that creates a fresh Payment in SCHEDULED + back-references it via nsf.retry_payment_id. Also: PTP capture sub-form (amount + date + method)."
-        fields={[
-          "Server Action: setResolution(eventId, { resolution, comments })",
-          "Server Action: scheduleRetry(eventId, { amount, scheduled_for, method })",
-          "PTP capture form (only when resolution=PROMISE_TO_PAY)",
-          "Audit trail row per action (operator + IP + timestamp)",
-          "Optimistic UI update + redirect back to /collections",
-        ]}
-      />
+      <Card>
+        <CardHeader>
+          <CardTitle>Retry payment</CardTitle>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Schedules a fresh Payment in <code>SCHEDULED</code> status,
+            tagged source <code>COLLECTIONS</code>, and links it back via{" "}
+            <code>nsf.retry_payment_id</code>. Drives the Servicing
+            Payments tab.
+          </p>
+        </CardHeader>
+        <CardContent>
+          {event.retry_attempted ? (
+            <div className="rounded-md border border-line bg-muted/30 px-4 py-3 text-sm">
+              Retry already attempted on{" "}
+              <span className="font-mono">{fmt(event.retry_at)}</span> via
+              payment{" "}
+              <span className="font-mono">{event.retry_payment_id}</span>.
+            </div>
+          ) : (
+            <form
+              action={retryNSFPaymentAction.bind(null, event.id)}
+              className="grid grid-cols-1 gap-4 sm:grid-cols-3"
+            >
+              <div>
+                <label
+                  htmlFor="amount"
+                  className="text-xs text-muted-foreground tracking-wider uppercase"
+                >
+                  Amount (CAD)
+                </label>
+                <input
+                  id="amount"
+                  name="amount"
+                  type="number"
+                  step="0.01"
+                  min="0.01"
+                  required
+                  defaultValue={payment?.amount ?? ""}
+                  className="mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="scheduled_for"
+                  className="text-xs text-muted-foreground tracking-wider uppercase"
+                >
+                  Scheduled for
+                </label>
+                <input
+                  id="scheduled_for"
+                  name="scheduled_for"
+                  type="date"
+                  required
+                  className="mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="method"
+                  className="text-xs text-muted-foreground tracking-wider uppercase"
+                >
+                  Method
+                </label>
+                <select
+                  id="method"
+                  name="method"
+                  required
+                  defaultValue="PAD"
+                  className="mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                >
+                  <option value="PAD">PAD</option>
+                  <option value="EFT">EFT</option>
+                  <option value="WIRE">WIRE</option>
+                  <option value="CHEQUE">CHEQUE</option>
+                  <option value="CASH">CASH</option>
+                  <option value="INTERNAL_TRANSFER">INTERNAL_TRANSFER</option>
+                </select>
+              </div>
+              <div className="sm:col-span-3">
+                <button
+                  type="submit"
+                  className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-muted"
+                >
+                  Schedule retry
+                </button>
+              </div>
+            </form>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }

@@ -187,6 +187,26 @@ export const repository = {
     return PAYMENTS.find((p) => p.id === id);
   },
 
+  // -- Mock-data mutators (PR #4.4.2) -----------------------------------
+  // Mutate the in-memory arrays so Server Actions feel real in the demo.
+  // Production replaces these with a Supabase upsert. Persistence across
+  // reloads is intentional within the Node process lifetime; a server
+  // restart resets to the JSON fixtures.
+
+  async updateNSFEvent(
+    id: string,
+    patch: Partial<NSFEvent>,
+  ): Promise<NSFEvent | undefined> {
+    const idx = NSF_EVENTS.findIndex((n) => n.id === id);
+    if (idx < 0) return undefined;
+    NSF_EVENTS[idx] = { ...NSF_EVENTS[idx], ...patch };
+    return NSF_EVENTS[idx];
+  },
+  async addPayment(payment: Payment): Promise<Payment> {
+    PAYMENTS.push(payment);
+    return payment;
+  },
+
   // -- Credit products (Loan Settings, PR #4.5) --------------------------
 
   async listCreditProducts(): Promise<CreditProduct[]> {
