@@ -55,14 +55,24 @@ export default async function MigrationRunsHistoryPage() {
               re-displayed without re-execution.
             </p>
           </div>
-          <form action={runMigrationNowAction}>
-            <button
-              type="submit"
-              className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-            >
-              Run migration now
-            </button>
-          </form>
+          <div className="flex items-center gap-3">
+            {runs.length >= 2 && (
+              <Link
+                href="/reports/migration/diff"
+                className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-muted"
+              >
+                Diff latest two
+              </Link>
+            )}
+            <form action={runMigrationNowAction}>
+              <button
+                type="submit"
+                className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+              >
+                Run migration now
+              </button>
+            </form>
+          </div>
         </div>
       </header>
 
