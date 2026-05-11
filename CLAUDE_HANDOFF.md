@@ -89,24 +89,25 @@ See §7 below for the revised PR ladder reflecting cutover priorities.
 | PR #4.6 | `redesign/reports-migration-pr4-6` | [#16](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/16) | **Merged to main** — Reports: TurnKey migration reconciliation viewer |
 | PR #4.4.2 | `redesign/nsf-server-actions-pr4-4-2` | [#17](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/17) | **Merged to main** — NSF Server Actions |
 | PR #4.5.1 | `redesign/uw-actions-pr4-5-1` | [#18](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/18) | **Merged to main** — Underwriting Decision Server Actions |
-| **PR #4.6.1** | **`redesign/migration-runs-pr4-6-1`** | _open in this PR_ | **In progress** — Migration runs persistence + history list + Run-now action |
+| PR #4.6.1 | `redesign/migration-runs-pr4-6-1` | [#19](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/19) | **Merged to main** — Migration runs persistence + history + Run-now action |
+| **PR #4.7** | **`redesign/integration-cutover-pr4-7`** | _open in this PR_ | **In progress** — Integration cutover checklist (per-provider runbook UI) |
 
-PRs #1 → #4.5.1 are squashed onto main. PR #4.6.1 is the open draft.
+PRs #1 → #4.6.1 are squashed onto main. PR #4.7 is the open draft.
 
 ---
 
 ## 4. Where you are right now
 
-**Current branch:** `redesign/migration-runs-pr4-6-1`
+**Current branch:** `redesign/integration-cutover-pr4-7`
 **Stacked on:** `main`
-**Tests:** 177/177 passing (11 vitest files — adds `lib/migration/to-migration-run.test.ts`)
+**Tests:** 189/189 passing (12 vitest files — adds `lib/cutover.test.ts`)
 **Build:** `npm run build` clean
 
-This PR persists each `runMigration()` execution as a `MigrationRun`
-row. New "Run migration now" Server Action creates a fresh run; the
-history list at `/reports/migration/runs` shows every run; the detail
-at `/reports/migration/runs/[runId]` re-renders the stored
-reconciliation snapshot.
+This PR adds the `/cutover` workplace — the per-provider checklist of
+webhook switches, key rotations, callback URL updates, and contract
+re-verifications operations needs to complete before flipping production
+from TurnKey to PaySpyre. The READY badge at the top flips green when
+zero items remain PENDING.
 
 ---
 

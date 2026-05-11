@@ -205,9 +205,19 @@ Carryovers from the existing TurnKey deployment are marked **(existing)**.
   Server Action on the migration viewer + history list. Pure helper
   `toMigrationRun()` (2 vitest cases) maps a `MigrationResult` →
   `MigrationRun` row.
-- **PR #4.7+ (workplace build-out):** Integration
-  cutover, Decision Engine. Each fills in remaining `StubBanner`
-  placeholders.
+- **PR #4.7 (Integration cutover checklist):** new `/cutover` workplace
+  surfacing the per-provider runbook items operations needs to complete
+  before flipping production from TurnKey to PaySpyre. Predefined items
+  (rotate API key, swap webhook URL, IP allowlist, contract
+  re-verification) seeded per provider — Zum Rails, Flinks, SignNow,
+  SendGrid, Equifax, Walnut, MessageBird (N/A). Pure helper
+  `applyCutoverStatus` in `lib/cutover.ts` stamps `completed_at` /
+  `completed_by` on transitions; Server Action wires per-row status
+  selector + notes. Group-level READY badge flips when zero items
+  remain PENDING. Spec doc:
+  `docs/spec/integration-cutover.md`. 11 vitest cases.
+- **PR #4.8+ (workplace build-out):** Decision Engine. Plus follow-ups
+  to wire real webhook handlers per provider (PR #4.7.x).
 
 ### Future tracks (not in PR #1–#3)
 
