@@ -16,6 +16,8 @@ import {
   totalNSFFees,
   type DPDBucket,
 } from "@/lib/collections";
+import { ptpsDueSoon } from "@/lib/ptp-tracker";
+import { processPTPsAction } from "./actions";
 
 function fmt(iso: string): string {
   return new Date(iso).toLocaleDateString("en-CA", {
@@ -52,24 +54,102 @@ const BUCKET_LABEL: Record<DPDBucket, string> = {
  * lists what's coming.
  */
 export default async function CollectionsPage() {
-  const events = await repository.listUnresolvedNSFEvents();
+  const [events, allEvents] = await Promise.all([
+    repository.listUnresolvedNSFEvents(),
+    repository.listAllNSFEvents(),
+  ]);
   const queue = collectionsQueueFromNSF(events);
   const counts = bucketCounts(queue);
   const feesOutstanding = totalNSFFees(queue);
+  const dueSoon = ptpsDueSoon(allEvents, 7);
+  const openPTPCount = allEvents.filter((e) => e.ptp_status === "OPEN").length;
 
   return (
     <div className="p-6 max-w-[1400px] mx-auto space-y-6">
       <header>
-        <div className="text-[11px] font-semibold tracking-wider text-gold-dim uppercase">
-          Workplace
+        <div className="flex items-center justify-between gap-6 flex-wrap">
+          <div>
+            <div className="text-[11px] font-semibold tracking-wider text-gold-dim uppercase">
+              Workplace
+            </div>
+            <h1 className="text-2xl font-semibold text-ink mt-1">Collections</h1>
+            <p className="text-ink-dim text-sm mt-1 max-w-3xl">
+              Unresolved NSF events across the book. Oldest first; each row
+              links to the borrower&apos;s NSF tab in Servicing. Action
+              workflow lives on the per-event detail page.
+            </p>
+          </div>
+          <form action={processPTPsAction} className="shrink-0">
+            <button
+              type="submit"
+              className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-muted"
+              title="Walks every OPEN PTP and flips to KEPT (matching payment posted) or BROKEN (due date passed). Production runs this nightly."
+            >
+              Process PTPs now
+            </button>
+          </form>
         </div>
-        <h1 className="text-2xl font-semibold text-ink mt-1">Collections</h1>
-        <p className="text-ink-dim text-sm mt-1 max-w-3xl">
-          Unresolved NSF events across the book. Oldest first; each row
-          links to the borrower&apos;s NSF tab in Servicing. Action workflow
-          (retry / PTP / resolution) lands in PR #4.4 follow-ups.
-        </p>
       </header>
+
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between gap-6">
+          <div>
+            <CardTitle>Promise-to-pay watch</CardTitle>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {openPTPCount}{" "}
+              {openPTPCount === 1 ? "open PTP" : "open PTPs"} on the book ·{" "}
+              {dueSoon.length} due in the next 7 days. Click{" "}
+              <em>Process PTPs now</em> to flip overdue OPEN ↦ BROKEN and
+              kept-on-time OPEN ↦ KEPT.
+            </p>
+          </div>
+        </CardHeader>
+        <CardContent className="p-0">
+          {dueSoon.length === 0 ? (
+            <div className="p-6 text-sm text-muted-foreground">
+              No PTPs due within 7 days.
+            </div>
+          ) : (
+            <table className="w-full text-sm">
+              <thead className="border-b bg-muted/30">
+                <tr className="text-left text-xs text-muted-foreground">
+                  <th className="px-4 py-2 font-medium">Event</th>
+                  <th className="px-4 py-2 font-medium">Loan</th>
+                  <th className="px-4 py-2 font-medium">PTP due</th>
+                  <th className="px-4 py-2 font-medium text-right">Amount</th>
+                  <th className="px-4 py-2 font-medium">Method</th>
+                </tr>
+              </thead>
+              <tbody>
+                {dueSoon.map((e) => (
+                  <tr key={e.id} className="border-b last:border-b-0 hover:bg-muted/20">
+                    <td className="px-4 py-2 font-mono text-xs">
+                      <Link
+                        href={`/collections/nsf/${e.id}`}
+                        className="text-foreground hover:underline"
+                      >
+                        {e.id}
+                      </Link>
+                    </td>
+                    <td className="px-4 py-2 font-mono text-xs text-muted-foreground">
+                      {e.loan_id}
+                    </td>
+                    <td className="px-4 py-2 font-mono text-xs">
+                      {e.ptp_due_date}
+                    </td>
+                    <td className="px-4 py-2 text-right font-mono text-xs">
+                      {e.ptp_amount != null ? formatCAD(e.ptp_amount) : "—"}
+                    </td>
+                    <td className="px-4 py-2 text-xs text-muted-foreground">
+                      {e.ptp_method ?? "—"}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>

@@ -192,6 +192,14 @@ export const repository = {
       a.occurred_at < b.occurred_at ? 1 : -1,
     );
   },
+  /** All NSF events (resolved + unresolved). Used by the PTP tracker (PR #4.4.4). */
+  async listAllNSFEvents(): Promise<NSFEvent[]> {
+    return NSF_EVENTS;
+  },
+  /** All payments. Used by the PTP tracker to find KEPT matches (PR #4.4.4). */
+  async listAllPayments(): Promise<Payment[]> {
+    return PAYMENTS;
+  },
   async getNSFEvent(id: string): Promise<NSFEvent | undefined> {
     return NSF_EVENTS.find((n) => n.id === id);
   },
