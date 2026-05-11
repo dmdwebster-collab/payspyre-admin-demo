@@ -196,6 +196,15 @@ Carryovers from the existing TurnKey deployment are marked **(existing)**.
   `executeAction()` from the existing status-flow state machine.
   Repository gains `updateApplication` + `addApplicationStatusEvent`
   mutators. Each transition writes the audit event + redirects.
+- **PR #4.6.1 (Migration runs persistence + history):** new
+  `MigrationRun` entity persists each `runMigration()` execution as a
+  row (snapshot of the ReconciliationReport so historical runs are
+  re-displayable without re-execution). New routes
+  `/reports/migration/runs` (history list) and
+  `/reports/migration/runs/[runId]` (detail). New "Run migration now"
+  Server Action on the migration viewer + history list. Pure helper
+  `toMigrationRun()` (2 vitest cases) maps a `MigrationResult` →
+  `MigrationRun` row.
 - **PR #4.7+ (workplace build-out):** Integration
   cutover, Decision Engine. Each fills in remaining `StubBanner`
   placeholders.

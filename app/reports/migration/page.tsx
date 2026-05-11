@@ -11,6 +11,7 @@ import { formatCAD } from "@/lib/utils";
 import { runMigration } from "@/lib/migration/turnkey-import";
 import { sampleTurnKeyExport } from "@/lib/migration/sample-export";
 import type { EntityKind } from "@/lib/migration/types";
+import { runMigrationNowAction } from "./actions";
 
 const ENTITY_LABEL: Record<EntityKind, string> = {
   borrower: "Borrowers",
@@ -66,21 +67,43 @@ export default async function MigrationReportPage() {
         >
           ← Back to Reports
         </Link>
-        <div className="mt-2 flex items-center gap-3">
-          <h1 className="text-2xl font-semibold text-ink">
-            TurnKey migration · reconciliation
-          </h1>
-          <Badge variant={r.ok ? "active" : "writeoff"}>
-            {r.ok ? "OK" : "REVIEW"}
-          </Badge>
+        <div className="mt-2 flex items-center justify-between gap-6 flex-wrap">
+          <div>
+            <div className="flex items-center gap-3">
+              <h1 className="text-2xl font-semibold text-ink">
+                TurnKey migration · reconciliation
+              </h1>
+              <Badge variant={r.ok ? "active" : "writeoff"}>
+                {r.ok ? "OK" : "REVIEW"}
+              </Badge>
+            </div>
+            <p className="text-ink-dim text-sm mt-2 max-w-3xl">
+              Live re-run of{" "}
+              <code className="font-mono text-gold">runMigration()</code> (PR
+              #4.2) against the sample export at{" "}
+              <code className="font-mono">lib/migration/sample-export.ts</code>.
+              Tolerance: {formatCAD(r.tolerance_cad)} per money total.
+              Strategy: auto (use export schedule when present, else
+              regenerate).
+            </p>
+          </div>
+          <div className="flex items-center gap-3 shrink-0">
+            <Link
+              href="/reports/migration/runs"
+              className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-muted"
+            >
+              View run history
+            </Link>
+            <form action={runMigrationNowAction}>
+              <button
+                type="submit"
+                className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+              >
+                Run migration now
+              </button>
+            </form>
+          </div>
         </div>
-        <p className="text-ink-dim text-sm mt-2 max-w-3xl">
-          Live re-run of <code className="font-mono text-gold">runMigration()</code>{" "}
-          (PR #4.2) against the sample export at{" "}
-          <code className="font-mono">lib/migration/sample-export.ts</code>.
-          Tolerance: {formatCAD(r.tolerance_cad)} per money total. Strategy:
-          auto (use export schedule when present, else regenerate).
-        </p>
       </header>
 
       <Card>
