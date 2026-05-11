@@ -18,6 +18,7 @@ import paymentScheduleEntriesJson from "./fixtures/payment_schedule_entries.json
 import paymentsJson from "./fixtures/payments.json";
 import nsfEventsJson from "./fixtures/nsf_events.json";
 import creditProductsJson from "./fixtures/credit_products.json";
+import migrationRunsJson from "./fixtures/migration_runs.json";
 import type { Loan } from "../types/loan";
 import type { Vendor } from "../types/vendor";
 import type { Application, ApplicationStatusEvent } from "../types/application";
@@ -29,6 +30,7 @@ import type {
 import type { Payment } from "../types/payment";
 import type { NSFEvent } from "../types/nsf-event";
 import type { CreditProduct } from "../types/credit-product";
+import type { MigrationRun } from "../types/migration-run";
 
 // Cast JSON imports to typed arrays. The fixtures are derived from the
 // legacy v1 dataset and conform to the schemas in lib/types/.
@@ -53,6 +55,10 @@ const NSF_EVENTS = nsfEventsJson as unknown as NSFEvent[];
 // PR #4.5 — Credit products fixture. Single launch product (Dental Patient
 // Financing) configured with the bracket model from PR #3.1.
 const CREDIT_PRODUCTS = creditProductsJson as unknown as CreditProduct[];
+
+// PR #4.6.1 — Migration runs. Persisted history of runMigration() calls,
+// extended in-memory by the "Run migration now" Server Action.
+const MIGRATION_RUNS = migrationRunsJson as unknown as MigrationRun[];
 
 export interface PortfolioKpis {
   summary: Record<string, number>;
@@ -232,5 +238,21 @@ export const repository = {
   },
   async getCreditProduct(id: string): Promise<CreditProduct | undefined> {
     return CREDIT_PRODUCTS.find((p) => p.id === id || p.code === id);
+  },
+
+  // -- Migration runs (PR #4.6.1) ----------------------------------------
+
+  async listMigrationRuns(): Promise<MigrationRun[]> {
+    // Newest first.
+    return [...MIGRATION_RUNS].sort((a, b) =>
+      a.ran_at < b.ran_at ? 1 : -1,
+    );
+  },
+  async getMigrationRun(id: string): Promise<MigrationRun | undefined> {
+    return MIGRATION_RUNS.find((r) => r.id === id);
+  },
+  async addMigrationRun(run: MigrationRun): Promise<MigrationRun> {
+    MIGRATION_RUNS.push(run);
+    return run;
   },
 };
