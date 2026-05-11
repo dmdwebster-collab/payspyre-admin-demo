@@ -19,6 +19,7 @@ import paymentsJson from "./fixtures/payments.json";
 import nsfEventsJson from "./fixtures/nsf_events.json";
 import creditProductsJson from "./fixtures/credit_products.json";
 import migrationRunsJson from "./fixtures/migration_runs.json";
+import cutoverItemsJson from "./fixtures/cutover_items.json";
 import type { Loan } from "../types/loan";
 import type { Vendor } from "../types/vendor";
 import type { Application, ApplicationStatusEvent } from "../types/application";
@@ -31,6 +32,7 @@ import type { Payment } from "../types/payment";
 import type { NSFEvent } from "../types/nsf-event";
 import type { CreditProduct } from "../types/credit-product";
 import type { MigrationRun } from "../types/migration-run";
+import type { CutoverItem } from "../types/cutover";
 
 // Cast JSON imports to typed arrays. The fixtures are derived from the
 // legacy v1 dataset and conform to the schemas in lib/types/.
@@ -59,6 +61,10 @@ const CREDIT_PRODUCTS = creditProductsJson as unknown as CreditProduct[];
 // PR #4.6.1 — Migration runs. Persisted history of runMigration() calls,
 // extended in-memory by the "Run migration now" Server Action.
 const MIGRATION_RUNS = migrationRunsJson as unknown as MigrationRun[];
+
+// PR #4.7 — Integration cutover checklist. Predefined items per provider;
+// operators tick them off via Server Actions on /cutover.
+const CUTOVER_ITEMS = cutoverItemsJson as unknown as CutoverItem[];
 
 export interface PortfolioKpis {
   summary: Record<string, number>;
@@ -254,5 +260,23 @@ export const repository = {
   async addMigrationRun(run: MigrationRun): Promise<MigrationRun> {
     MIGRATION_RUNS.push(run);
     return run;
+  },
+
+  // -- Cutover checklist (PR #4.7) ---------------------------------------
+
+  async listCutoverItems(): Promise<CutoverItem[]> {
+    return CUTOVER_ITEMS;
+  },
+  async getCutoverItem(id: string): Promise<CutoverItem | undefined> {
+    return CUTOVER_ITEMS.find((c) => c.id === id);
+  },
+  async updateCutoverItem(
+    id: string,
+    patch: Partial<CutoverItem>,
+  ): Promise<CutoverItem | undefined> {
+    const idx = CUTOVER_ITEMS.findIndex((c) => c.id === id);
+    if (idx < 0) return undefined;
+    CUTOVER_ITEMS[idx] = { ...CUTOVER_ITEMS[idx], ...patch };
+    return CUTOVER_ITEMS[idx];
   },
 };
