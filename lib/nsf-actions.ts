@@ -12,23 +12,74 @@ import type { Payment, PaymentMethod } from "./types/payment";
 
 // --- Resolve --------------------------------------------------------------
 
-export const ResolveInputSchema = z.object({
-  resolution: z.enum([
-    "RECOVERED",
-    "WRITTEN_OFF",
-    "PROMISE_TO_PAY",
-    "IN_COLLECTIONS",
-  ]),
-  /** ISO YYYY-MM-DD. Defaults to today (UTC) when omitted. */
-  resolved_on: z.string().optional(),
-  comments: z.string().max(1000).optional(),
-});
+const PTP_METHODS_TUPLE = [
+  "EFT",
+  "PAD",
+  "WIRE",
+  "CHEQUE",
+  "CASH",
+  "INTERNAL_TRANSFER",
+] as const;
+
+/**
+ * Resolve input. PTP fields are only required when
+ * `resolution === "PROMISE_TO_PAY"`; the superRefine enforces that
+ * conditional so callers can submit a single form per resolution kind.
+ */
+export const ResolveInputSchema = z
+  .object({
+    resolution: z.enum([
+      "RECOVERED",
+      "WRITTEN_OFF",
+      "PROMISE_TO_PAY",
+      "IN_COLLECTIONS",
+    ]),
+    /** ISO YYYY-MM-DD. Defaults to today (UTC) when omitted. */
+    resolved_on: z.string().optional(),
+    comments: z.string().max(1000).optional(),
+    /** Required when resolution = PROMISE_TO_PAY. */
+    ptp_amount: z.number().positive().optional(),
+    ptp_due_date: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/, "ptp_due_date must be YYYY-MM-DD")
+      .optional(),
+    ptp_method: z.enum(PTP_METHODS_TUPLE).optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.resolution !== "PROMISE_TO_PAY") return;
+    if (data.ptp_amount === undefined) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["ptp_amount"],
+        message: "PTP amount required when resolution is PROMISE_TO_PAY",
+      });
+    }
+    if (!data.ptp_due_date) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["ptp_due_date"],
+        message: "PTP due date required when resolution is PROMISE_TO_PAY",
+      });
+    }
+    if (!data.ptp_method) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["ptp_method"],
+        message: "PTP method required when resolution is PROMISE_TO_PAY",
+      });
+    }
+  });
 export type ResolveInput = z.infer<typeof ResolveInputSchema>;
 
 /**
  * Apply a resolution to an NSFEvent. Returns the next event + a parsed
  * input for audit. Throws if the event is already resolved (idempotency
  * guard — the caller should re-fetch in that case).
+ *
+ * When `resolution = PROMISE_TO_PAY`, the PTP fields land on the event
+ * with `ptp_status = OPEN`. Other resolutions clear any prior PTP
+ * fields back to null (so a "WRITTEN_OFF after a broken PTP" doesn't
+ * leave stale capture data on the row).
  */
 export function applyResolution(
   event: NSFEvent,
@@ -40,11 +91,16 @@ export function applyResolution(
   }
   const input = ResolveInputSchema.parse(rawInput);
   const resolved_at = now.toISOString();
+  const isPTP = input.resolution === "PROMISE_TO_PAY";
   const next: NSFEvent = {
     ...event,
     resolution: input.resolution as NSFResolution,
     resolved_at,
     updated_at: resolved_at,
+    ptp_amount: isPTP ? input.ptp_amount ?? null : null,
+    ptp_due_date: isPTP ? input.ptp_due_date ?? null : null,
+    ptp_method: isPTP ? input.ptp_method ?? null : null,
+    ptp_status: isPTP ? "OPEN" : null,
   };
   return { next, input };
 }

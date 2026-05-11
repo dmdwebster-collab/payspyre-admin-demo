@@ -44,12 +44,9 @@ describe("applyResolution", () => {
   });
 
   it("accepts each of the four resolution values", () => {
-    for (const r of [
-      "RECOVERED",
-      "WRITTEN_OFF",
-      "PROMISE_TO_PAY",
-      "IN_COLLECTIONS",
-    ] as const) {
+    // Non-PTP resolutions only need `resolution`; PROMISE_TO_PAY needs PTP
+    // fields too (covered separately in the PR #4.4.3 PTP cases below).
+    for (const r of ["RECOVERED", "WRITTEN_OFF", "IN_COLLECTIONS"] as const) {
       const { next } = applyResolution(makeEvent(), { resolution: r }, NOW);
       expect(next.resolution).toBe(r);
     }
@@ -80,6 +77,115 @@ describe("applyResolution", () => {
     const snapshot = JSON.stringify(event);
     applyResolution(event, { resolution: "RECOVERED" }, NOW);
     expect(JSON.stringify(event)).toBe(snapshot);
+  });
+
+  // --- PR #4.4.3: PTP capture ---
+
+  it("rejects PROMISE_TO_PAY without PTP fields", () => {
+    expect(() =>
+      applyResolution(makeEvent(), { resolution: "PROMISE_TO_PAY" }, NOW),
+    ).toThrow();
+  });
+
+  it("rejects PROMISE_TO_PAY with partial PTP fields", () => {
+    expect(() =>
+      applyResolution(
+        makeEvent(),
+        {
+          resolution: "PROMISE_TO_PAY",
+          ptp_amount: 250,
+          // missing ptp_due_date + ptp_method
+        },
+        NOW,
+      ),
+    ).toThrow();
+  });
+
+  it("accepts PROMISE_TO_PAY with full PTP fields, stamping ptp_status=OPEN", () => {
+    const { next } = applyResolution(
+      makeEvent(),
+      {
+        resolution: "PROMISE_TO_PAY",
+        ptp_amount: 250,
+        ptp_due_date: "2026-05-20",
+        ptp_method: "PAD",
+        comments: "Borrower called",
+      },
+      NOW,
+    );
+    expect(next.resolution).toBe("PROMISE_TO_PAY");
+    expect(next.ptp_amount).toBe(250);
+    expect(next.ptp_due_date).toBe("2026-05-20");
+    expect(next.ptp_method).toBe("PAD");
+    expect(next.ptp_status).toBe("OPEN");
+  });
+
+  it("rejects malformed ptp_due_date format", () => {
+    expect(() =>
+      applyResolution(
+        makeEvent(),
+        {
+          resolution: "PROMISE_TO_PAY",
+          ptp_amount: 250,
+          ptp_due_date: "May 20",
+          ptp_method: "PAD",
+        },
+        NOW,
+      ),
+    ).toThrow(/YYYY-MM-DD/);
+  });
+
+  it("rejects negative or zero ptp_amount", () => {
+    expect(() =>
+      applyResolution(
+        makeEvent(),
+        {
+          resolution: "PROMISE_TO_PAY",
+          ptp_amount: 0,
+          ptp_due_date: "2026-05-20",
+          ptp_method: "PAD",
+        },
+        NOW,
+      ),
+    ).toThrow();
+  });
+
+  it("clears stale PTP fields when resolution changes to non-PTP", () => {
+    // The schema's idempotency guard rejects re-resolving, so simulate
+    // by hand-building an event that already has PTP fields set.
+    const stale = makeEvent({
+      ptp_amount: 250,
+      ptp_due_date: "2026-04-30",
+      ptp_method: "PAD",
+      ptp_status: "OPEN",
+    });
+    const { next } = applyResolution(stale, { resolution: "WRITTEN_OFF" }, NOW);
+    expect(next.resolution).toBe("WRITTEN_OFF");
+    expect(next.ptp_amount).toBeNull();
+    expect(next.ptp_due_date).toBeNull();
+    expect(next.ptp_method).toBeNull();
+    expect(next.ptp_status).toBeNull();
+  });
+
+  it("ignores PTP fields when resolution is not PROMISE_TO_PAY", () => {
+    // PTP fields supplied but resolution is RECOVERED — schema should
+    // accept it (since the conditional only requires PTP for PROMISE_TO_PAY)
+    // and applyResolution drops them.
+    const { next } = applyResolution(
+      makeEvent(),
+      {
+        resolution: "RECOVERED",
+        ptp_amount: 250,
+        ptp_due_date: "2026-05-20",
+        ptp_method: "PAD",
+      },
+      NOW,
+    );
+    expect(next.resolution).toBe("RECOVERED");
+    expect(next.ptp_amount).toBeNull();
+    expect(next.ptp_due_date).toBeNull();
+    expect(next.ptp_method).toBeNull();
+    expect(next.ptp_status).toBeNull();
   });
 });
 

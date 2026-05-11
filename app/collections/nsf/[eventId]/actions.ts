@@ -45,11 +45,21 @@ export async function resolveNSFEventAction(
   const resolution = formData.get("resolution");
   const resolved_on = formData.get("resolved_on") || undefined;
   const comments = formData.get("comments") || undefined;
+  const ptpAmountRaw = formData.get("ptp_amount");
+  const ptp_amount =
+    typeof ptpAmountRaw === "string" && ptpAmountRaw.length > 0
+      ? Number(ptpAmountRaw)
+      : undefined;
+  const ptp_due_date = formData.get("ptp_due_date") || undefined;
+  const ptp_method = formData.get("ptp_method") || undefined;
 
   const { next } = applyResolution(event, {
     resolution,
     resolved_on,
     comments,
+    ptp_amount,
+    ptp_due_date,
+    ptp_method,
   });
   await repository.updateNSFEvent(event.id, next);
 
