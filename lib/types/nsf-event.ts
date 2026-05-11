@@ -22,6 +22,25 @@ export const NSF_RESOLUTIONS = [
 ] as const;
 export type NSFResolution = (typeof NSF_RESOLUTIONS)[number];
 
+/**
+ * PTP status — only meaningful when resolution = PROMISE_TO_PAY.
+ * Auto-flipped to BROKEN by a nightly job once `ptp_due_date` passes
+ * without payment, or to KEPT when a Payment matching the PTP terms
+ * posts. Manual override allowed.
+ */
+export const PTP_STATUSES = ["OPEN", "KEPT", "BROKEN"] as const;
+export type PTPStatus = (typeof PTP_STATUSES)[number];
+
+export const PTP_METHODS = [
+  "EFT",
+  "PAD",
+  "WIRE",
+  "CHEQUE",
+  "CASH",
+  "INTERNAL_TRANSFER",
+] as const;
+export type PTPMethod = (typeof PTP_METHODS)[number];
+
 export const NSFEventSchema = z.object({
   id: z.string(),
   loan_id: z.string(), // → loans(id)
@@ -36,6 +55,12 @@ export const NSFEventSchema = z.object({
   retry_at: z.string().nullable(), // ISO YYYY-MM-DD
   resolved_at: z.string().datetime().nullable(),
   resolution: z.enum(NSF_RESOLUTIONS).nullable(),
+  // PR #4.4.3 — Promise-to-pay capture. Only populated when resolution =
+  // PROMISE_TO_PAY; otherwise nullable / undefined.
+  ptp_amount: z.number().positive().nullable().optional(),
+  ptp_due_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable().optional(),
+  ptp_method: z.enum(PTP_METHODS).nullable().optional(),
+  ptp_status: z.enum(PTP_STATUSES).nullable().optional(),
   created_at: z.string().datetime(),
   updated_at: z.string().datetime(),
 });

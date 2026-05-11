@@ -290,6 +290,80 @@ export default async function NSFEventDetailPage({ params }: Props) {
                   className="mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                 />
               </div>
+
+              {/* PR #4.4.3 — PTP capture sub-form. Always rendered; the
+                  Server Action's Zod schema only requires these when
+                  resolution=PROMISE_TO_PAY. Server-only — no client
+                  conditional show. */}
+              <div className="sm:col-span-2 rounded-md border border-line bg-muted/20 p-4 space-y-3">
+                <div className="text-[11px] font-semibold tracking-wider text-gold-dim uppercase">
+                  Promise-to-pay capture
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Required only when resolution = <code className="font-mono">PROMISE_TO_PAY</code>.
+                  Ignored on other resolutions. Borrower commits to a specific
+                  amount + date + method; the PTP auto-flips to{" "}
+                  <code className="font-mono">BROKEN</code> if the date passes
+                  without payment, or <code className="font-mono">KEPT</code>{" "}
+                  on a matching posted Payment.
+                </p>
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                  <div>
+                    <label
+                      htmlFor="ptp_amount"
+                      className="text-xs text-muted-foreground tracking-wider uppercase"
+                    >
+                      PTP amount (CAD)
+                    </label>
+                    <input
+                      id="ptp_amount"
+                      name="ptp_amount"
+                      type="number"
+                      step="0.01"
+                      min="0.01"
+                      placeholder="250.00"
+                      className="mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="ptp_due_date"
+                      className="text-xs text-muted-foreground tracking-wider uppercase"
+                    >
+                      PTP due date
+                    </label>
+                    <input
+                      id="ptp_due_date"
+                      name="ptp_due_date"
+                      type="date"
+                      className="mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="ptp_method"
+                      className="text-xs text-muted-foreground tracking-wider uppercase"
+                    >
+                      PTP method
+                    </label>
+                    <select
+                      id="ptp_method"
+                      name="ptp_method"
+                      defaultValue=""
+                      className="mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                    >
+                      <option value="">—</option>
+                      <option value="PAD">PAD</option>
+                      <option value="EFT">EFT</option>
+                      <option value="WIRE">WIRE</option>
+                      <option value="CHEQUE">CHEQUE</option>
+                      <option value="CASH">CASH</option>
+                      <option value="INTERNAL_TRANSFER">INTERNAL_TRANSFER</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
               <div className="sm:col-span-2">
                 <button
                   type="submit"
@@ -299,6 +373,48 @@ export default async function NSFEventDetailPage({ params }: Props) {
                 </button>
               </div>
             </form>
+          )}
+
+          {event.resolved_at && event.resolution === "PROMISE_TO_PAY" && (
+            <div className="mt-4 rounded-md border border-line bg-muted/20 p-4 space-y-2">
+              <div className="text-[11px] font-semibold tracking-wider text-gold-dim uppercase">
+                Promise-to-pay
+              </div>
+              <dl className="grid grid-cols-3 gap-3 text-sm">
+                <div>
+                  <dt className="text-xs text-muted-foreground">Amount</dt>
+                  <dd className="font-mono">
+                    {event.ptp_amount != null
+                      ? formatCAD(event.ptp_amount)
+                      : "—"}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-xs text-muted-foreground">Due</dt>
+                  <dd className="font-mono">{event.ptp_due_date ?? "—"}</dd>
+                </div>
+                <div>
+                  <dt className="text-xs text-muted-foreground">Method</dt>
+                  <dd className="font-mono">{event.ptp_method ?? "—"}</dd>
+                </div>
+                <div>
+                  <dt className="text-xs text-muted-foreground">Status</dt>
+                  <dd>
+                    <Badge
+                      variant={
+                        event.ptp_status === "KEPT"
+                          ? "paid"
+                          : event.ptp_status === "BROKEN"
+                          ? "writeoff"
+                          : "active"
+                      }
+                    >
+                      {event.ptp_status ?? "OPEN"}
+                    </Badge>
+                  </dd>
+                </div>
+              </dl>
+            </div>
           )}
         </CardContent>
       </Card>
