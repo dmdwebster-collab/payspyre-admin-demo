@@ -21,6 +21,7 @@ import creditProductsJson from "./fixtures/credit_products.json";
 import migrationRunsJson from "./fixtures/migration_runs.json";
 import cutoverItemsJson from "./fixtures/cutover_items.json";
 import uwNotesJson from "./fixtures/uw_notes.json";
+import decisionStrategiesJson from "./fixtures/decision_strategies.json";
 import type { Loan } from "../types/loan";
 import type { Vendor } from "../types/vendor";
 import type { Application, ApplicationStatusEvent } from "../types/application";
@@ -35,6 +36,7 @@ import type { CreditProduct } from "../types/credit-product";
 import type { MigrationRun } from "../types/migration-run";
 import type { CutoverItem } from "../types/cutover";
 import type { UWNote } from "../types/uw-note";
+import type { DecisionStrategy } from "../types/decision-strategy";
 
 // Cast JSON imports to typed arrays. The fixtures are derived from the
 // legacy v1 dataset and conform to the schemas in lib/types/.
@@ -71,6 +73,11 @@ const CUTOVER_ITEMS = cutoverItemsJson as unknown as CutoverItem[];
 // PR #4.5.2 — Underwriting notes. Append-only log per application,
 // extended in-memory by addUWNote.
 const UW_NOTES = uwNotesJson as unknown as UWNote[];
+
+// PR #4.8 — Decision strategies. Single launch placeholder until David
+// commits the credit policy v0; the editor (PR #4.8.x) will let him
+// tune thresholds + persist.
+const DECISION_STRATEGIES = decisionStrategiesJson as unknown as DecisionStrategy[];
 
 export interface PortfolioKpis {
   summary: Record<string, number>;
@@ -302,5 +309,14 @@ export const repository = {
   async addUWNote(note: UWNote): Promise<UWNote> {
     UW_NOTES.push(note);
     return note;
+  },
+
+  // -- Decision strategies (PR #4.8) -------------------------------------
+
+  async listDecisionStrategies(): Promise<DecisionStrategy[]> {
+    return DECISION_STRATEGIES;
+  },
+  async getActiveDecisionStrategy(): Promise<DecisionStrategy | undefined> {
+    return DECISION_STRATEGIES.find((s) => s.active);
   },
 };

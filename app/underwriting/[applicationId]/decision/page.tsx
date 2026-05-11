@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { formatCAD } from "@/lib/utils";
 import { isCheckFresh } from "@/lib/types/credit-product";
 import { getAvailableActions } from "@/lib/status-flow";
+import { evaluateDecision } from "@/lib/decision-engine";
 import { runUWActionFromForm } from "./actions";
 
 interface Props {
@@ -58,6 +59,22 @@ export default async function UnderwritingDecisionTab({ params }: Props) {
   );
 
   const availableActions = getAvailableActions(application.status, "underwriting");
+
+  // PR #4.8 — Decision Engine evaluation. Mock signals for the demo
+  // since bureau pulls + bank verifications aren't wired yet (PR #4.5.1).
+  // Production reads bureau_score off the latest BureauPull, ability
+  // off the latest BankVerification, etc.
+  const strategy = await repository.getActiveDecisionStrategy();
+  const mockSignals = {
+    amount_cad: application.offer_amount ?? application.requested_amount,
+    bureau_score: 705,
+    ability_to_pay_score: 72,
+    nsf_count_90d: 0,
+    had_bankruptcy_within_lookback: false,
+  };
+  const decision = strategy
+    ? evaluateDecision(mockSignals, strategy)
+    : null;
 
   return (
     <div className="space-y-4">
@@ -185,6 +202,75 @@ export default async function UnderwritingDecisionTab({ params }: Props) {
           </dl>
         </CardContent>
       </Card>
+
+      {decision && strategy && (
+        <Card>
+          <CardHeader className="flex flex-row items-start justify-between gap-6">
+            <div>
+              <CardTitle>Decision Engine recommendation</CardTitle>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Strategy:{" "}
+                <span className="font-mono text-gold">{strategy.name}</span>{" "}
+                · signals are mocked for the demo (real signals wire in PR
+                #4.5.1 once bureau + bank tabs ship).
+              </p>
+            </div>
+            <Badge
+              variant={
+                decision.recommendation === "AUTO_APPROVE"
+                  ? "paid"
+                  : decision.recommendation === "AUTO_DECLINE"
+                  ? "writeoff"
+                  : "renewed"
+              }
+            >
+              {decision.recommendation}
+            </Badge>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {decision.reasons.length > 0 && (
+              <div>
+                <div className="text-xs text-muted-foreground tracking-wider uppercase mb-1">
+                  Reasons
+                </div>
+                <ul className="text-sm space-y-1">
+                  {decision.reasons.map((r, i) => (
+                    <li key={i} className="text-foreground">
+                      • {r}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {decision.missing_signals.length > 0 && (
+              <div className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900">
+                Missing signals: {decision.missing_signals.join(", ")} — fall
+                back to MANUAL_REVIEW until those land.
+              </div>
+            )}
+            <details className="text-xs">
+              <summary className="cursor-pointer text-muted-foreground tracking-wider uppercase">
+                Rule trace
+              </summary>
+              <ul className="mt-2 space-y-1 font-mono">
+                {decision.rules.map((rule, i) => (
+                  <li key={i} className="flex gap-2">
+                    <span className={rule.passed ? "text-emerald-700" : "text-amber-700"}>
+                      {rule.passed ? "✓" : "✗"}
+                    </span>
+                    <span className="text-foreground">{rule.rule}</span>
+                    {rule.detail && (
+                      <span className="text-muted-foreground">
+                        ({rule.detail})
+                      </span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </details>
+          </CardContent>
+        </Card>
+      )}
 
       <Card>
         <CardHeader>
