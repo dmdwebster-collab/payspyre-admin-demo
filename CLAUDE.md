@@ -160,6 +160,16 @@ Carryovers from the existing TurnKey deployment are marked **(existing)**.
   event + the bounced payment in one view. Includes a disabled-form
   scaffold for the Resolve / Retry workflow that PR #4.4.2 wires into
   Server Actions. Repository gains `getNSFEvent` + `getPayment` accessors.
+- **PR #4.4.2 (NSF Server Actions):** wires the Resolve / Retry forms
+  on `/collections/nsf/[eventId]` to Next 14 Server Actions. Pure
+  helpers in `lib/nsf-actions.ts` (`applyResolution`, `buildRetry`)
+  validate input with Zod and compute the next state; the Server
+  Actions in `app/collections/nsf/[eventId]/actions.ts` mutate the
+  in-memory mock data via new repository mutators (`updateNSFEvent`,
+  `addPayment`) and revalidate `/collections` + the detail + the
+  Servicing Payments / NSF tabs. Production swaps the mock-data
+  mutators for a Supabase upsert; the Server Action shape stays the
+  same. 10 new vitest cases.
 - **PR #4.5 (Underwriting workplace shell + Loan Settings viewer):**
   new `/underwriting/[applicationId]/{decision,bureau,bank,verification,notes}`
   route family with sticky Loan Header + 5 tabs. Decision tab is fully
