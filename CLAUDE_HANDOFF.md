@@ -84,22 +84,26 @@ See §7 below for the revised PR ladder reflecting cutover priorities.
 | PR #4.2 | `redesign/turnkey-export-adapter-pr4-2` | [#9](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/9) | **Merged to main** — TurnKey export adapter |
 | PR #4.3 | `redesign/servicing-workplace-pr4-3` | [#12](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/12) | **Merged to main** — Servicing workplace shell + Schedule viewer |
 | PR #4.4 | `redesign/collections-workplace-pr4-4` | [#13](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/13) | **Merged to main** — Collections NSF queue + DPD bucketing |
-| **PR #4.4.1** | **`redesign/nsf-detail-pr4-4-1`** | _open in this PR_ | **In progress** — NSF event detail page + Resolve/Retry scaffold |
+| PR #4.4.1 | `redesign/nsf-detail-pr4-4-1` | [#14](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/14) | **Merged to main** — NSF event detail page + Resolve/Retry scaffold |
+| **PR #4.5** | **`redesign/underwriting-and-products-pr4-5`** | _open in this PR_ | **In progress** — Underwriting workplace shell + Loan Settings product viewer |
 
-PRs #1 → #4.4 are all squashed onto main. PR #4.4.1 branches directly off main.
+PRs #1 → #4.4.1 are squashed onto main. PR #4.5 is the open draft.
 
 ---
 
 ## 4. Where you are right now
 
-**Current branch:** `redesign/nsf-detail-pr4-4-1`
+**Current branch:** `redesign/underwriting-and-products-pr4-5`
 **Stacked on:** `main`
-**Tests:** 158/158 passing (no new vitest files — UI-only PR)
+**Tests:** 158/158 passing (no new vitest files in this PR — UI-only)
 **Build:** `npm run build` clean
 
-This PR adds the NSF event detail page at `/collections/nsf/[eventId]`
-with the Resolve / Retry action scaffold. Server Actions land in
-PR #4.4.2.
+This PR adds the Underwriting workplace shell (Loan Header + 5 tabs;
+Decision live, the others stubbed for PR #4.5.1 / #4.5.2) and the
+Loan Settings product viewer at `/settings/products` (read-only,
+surfaces the bracket model from PR #3.1 in real UI). Editor lands in
+PR #4.5.x.
+>>>>>>> 11a78eb (PR #4.5: Underwriting workplace shell + Loan Settings product viewer)
 
 ---
 

@@ -160,9 +160,20 @@ Carryovers from the existing TurnKey deployment are marked **(existing)**.
   event + the bounced payment in one view. Includes a disabled-form
   scaffold for the Resolve / Retry workflow that PR #4.4.2 wires into
   Server Actions. Repository gains `getNSFEvent` + `getPayment` accessors.
-- **PR #4.5+ (workplace build-out):** Underwriting workplace, Loan
-  Settings editor, Reports / reconciliation, Integration cutover,
-  Decision Engine. Each fills in remaining `StubBanner` placeholders.
+- **PR #4.5 (Underwriting workplace shell + Loan Settings viewer):**
+  new `/underwriting/[applicationId]/{decision,bureau,bank,verification,notes}`
+  route family with sticky Loan Header + 5 tabs. Decision tab is fully
+  implemented (offer summary, freshness state per check via `isCheckFresh`,
+  available state-machine actions via `getAvailableActions`); the other
+  4 tabs are PR #4.5.1 / #4.5.2 stubs. Adds `/settings/products` — a
+  read-only viewer of the global credit-product catalog (single Dental
+  product fixture) showing the bracket model from PR #3.1 (multi-frequency,
+  amount brackets, per-bracket term + rate bands). Editor lands in
+  PR #4.5.x.
+- **PR #4.6+ (workplace build-out):** Reports / reconciliation, Integration
+  cutover, Decision Engine. Each fills in remaining `StubBanner`
+  placeholders.
+>>>>>>> 11a78eb (PR #4.5: Underwriting workplace shell + Loan Settings product viewer)
 
 ### Future tracks (not in PR #1–#3)
 

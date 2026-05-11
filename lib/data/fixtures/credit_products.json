@@ -1,0 +1,49 @@
+[
+  {
+    "id": "prod-dental-2026",
+    "code": "DENT",
+    "name": "Dental Patient Financing",
+    "active": true,
+    "provinces": ["BC", "AB"],
+    "permitted_frequencies": ["Weekly", "BiWeekly", "SemiMonthly", "Monthly"],
+    "amount_brackets": [
+      {
+        "id": "br-dental-small",
+        "min_amount": 500,
+        "max_amount": 4999.99,
+        "permitted_terms": [
+          { "min_term_months": 6, "max_term_months": 36 }
+        ],
+        "rate_band": { "min_rate": 9.99, "default_rate": 12.99, "max_rate": 19.99 }
+      },
+      {
+        "id": "br-dental-mid",
+        "min_amount": 5000,
+        "max_amount": 14999.99,
+        "permitted_terms": [
+          { "min_term_months": 12, "max_term_months": 48 },
+          { "min_term_months": 49, "max_term_months": 60 }
+        ],
+        "rate_band": { "min_rate": 8.99, "default_rate": 11.99, "max_rate": 17.99 }
+      },
+      {
+        "id": "br-dental-large",
+        "min_amount": 15000,
+        "max_amount": 50000,
+        "permitted_terms": [
+          { "min_term_months": 24, "max_term_months": 84 }
+        ],
+        "rate_band": { "min_rate": 7.99, "default_rate": 10.49, "max_rate": 15.99 }
+      }
+    ],
+    "origination_fee_pct": 0,
+    "requires_credit_bureau": true,
+    "requires_bank_verification": true,
+    "credit_report_validity_days": 30,
+    "bank_verification_validity_days": 30,
+    "post_booking_credit_repull_days": null,
+    "post_booking_bank_repull_days": null,
+    "created_at": "2026-01-01T00:00:00.000Z",
+    "updated_at": "2026-05-07T00:00:00.000Z"
+  }
+]
