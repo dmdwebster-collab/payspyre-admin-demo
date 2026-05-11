@@ -87,25 +87,25 @@ See §7 below for the revised PR ladder reflecting cutover priorities.
 | PR #4.4.1 | `redesign/nsf-detail-pr4-4-1` | [#14](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/14) | **Merged to main** — NSF event detail page + Resolve/Retry scaffold |
 | PR #4.5 | `redesign/underwriting-and-products-pr4-5` | [#15](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/15) | **Merged to main** — Underwriting workplace shell + Loan Settings product viewer |
 | PR #4.6 | `redesign/reports-migration-pr4-6` | [#16](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/16) | **Merged to main** — Reports: TurnKey migration reconciliation viewer |
-| **PR #4.4.2** | **`redesign/nsf-server-actions-pr4-4-2`** | _open in this PR_ | **In progress** — NSF Server Actions (Resolve + Retry wired) |
+| PR #4.4.2 | `redesign/nsf-server-actions-pr4-4-2` | [#17](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/17) | **Merged to main** — NSF Server Actions (Resolve + Retry) |
+| **PR #4.5.1** | **`redesign/uw-actions-pr4-5-1`** | _open in this PR_ | **In progress** — Underwriting Decision Server Actions |
 
-PRs #1 → #4.6 are squashed onto main. PR #4.4.2 is the open draft.
+PRs #1 → #4.4.2 are squashed onto main. PR #4.5.1 is the open draft.
 
 ---
 
 ## 4. Where you are right now
 
-**Current branch:** `redesign/nsf-server-actions-pr4-4-2`
+**Current branch:** `redesign/uw-actions-pr4-5-1`
 **Stacked on:** `main`
-**Tests:** 168/168 passing (9 vitest files — adds `lib/nsf-actions.test.ts`)
+**Tests:** 175/175 passing (10 vitest files — adds `lib/uw-actions.test.ts`)
 **Build:** `npm run build` clean
 
-This PR makes the Resolve / Retry forms on `/collections/nsf/[eventId]`
-real. Pure helpers in `lib/nsf-actions.ts` validate + compute the next
-state; Server Actions in `app/collections/nsf/[eventId]/actions.ts`
-mutate the in-memory mock data and revalidate. First Server Actions in
-the codebase — establishes the pattern for the rest of the workplace
-forms (PR #4.5.1, #4.5.2, etc).
+This PR makes the Underwriting Decision tab's action buttons real.
+`dispatchUWAction` validates input + delegates to `executeAction()`;
+the Server Action mutates the in-memory mock data and revalidates.
+Each transition writes the audit event that the Originations Workflow
+tab queries.
 
 ---
 

@@ -207,6 +207,24 @@ export const repository = {
     return payment;
   },
 
+  // -- Application + status event mutators (PR #4.5.1) ------------------
+
+  async updateApplication(
+    id: string,
+    patch: Partial<Application>,
+  ): Promise<Application | undefined> {
+    const idx = APPLICATIONS.findIndex((a) => a.id === id);
+    if (idx < 0) return undefined;
+    APPLICATIONS[idx] = { ...APPLICATIONS[idx], ...patch };
+    return APPLICATIONS[idx];
+  },
+  async addApplicationStatusEvent(
+    event: ApplicationStatusEvent,
+  ): Promise<ApplicationStatusEvent> {
+    APPLICATION_STATUS_EVENTS.push(event);
+    return event;
+  },
+
   // -- Credit products (Loan Settings, PR #4.5) --------------------------
 
   async listCreditProducts(): Promise<CreditProduct[]> {

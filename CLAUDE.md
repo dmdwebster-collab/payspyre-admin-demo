@@ -188,10 +188,17 @@ Carryovers from the existing TurnKey deployment are marked **(existing)**.
   capped issues list. The reg-facing reconciliation artifact for the
   cutover. Persistence (`migration_runs` table + diff view) follows in
   PR #4.6.x.
+- **PR #4.5.1 (Underwriting Decision Server Actions):** wires the
+  Decision tab's action buttons (`approve / reject / request_* /
+  return_for_reprocessing / register_offer_acceptance / cancel`) to
+  Next 14 Server Actions. Pure helper `dispatchUWAction` in
+  `lib/uw-actions.ts` Zod-validates input + delegates to
+  `executeAction()` from the existing status-flow state machine.
+  Repository gains `updateApplication` + `addApplicationStatusEvent`
+  mutators. Each transition writes the audit event + redirects.
 - **PR #4.7+ (workplace build-out):** Integration
   cutover, Decision Engine. Each fills in remaining `StubBanner`
   placeholders.
->>>>>>> 11a78eb (PR #4.5: Underwriting workplace shell + Loan Settings product viewer)
 
 ### Future tracks (not in PR #1–#3)
 

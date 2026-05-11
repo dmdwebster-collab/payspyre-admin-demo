@@ -7,10 +7,10 @@ import {
   CardContent,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { StubBanner } from "@/components/ui/stub-banner";
 import { formatCAD } from "@/lib/utils";
 import { isCheckFresh } from "@/lib/types/credit-product";
 import { getAvailableActions } from "@/lib/status-flow";
+import { runUWActionFromForm } from "./actions";
 
 interface Props {
   params: Promise<{ applicationId: string }>;
@@ -190,10 +190,11 @@ export default async function UnderwritingDecisionTab({ params }: Props) {
         <CardHeader>
           <CardTitle>Available actions</CardTitle>
           <p className="mt-1 text-xs text-muted-foreground">
-            Read-only preview of the state-machine transitions an
-            underwriter could fire from this status. PR #4.5.1 wires these
-            into Server Actions that call `executeAction()` and persist
-            the resulting `application_status_events` row.
+            State-machine transitions an underwriter can fire from this
+            status. Each form posts to{" "}
+            <code className="font-mono">runUWActionFromForm</code> which
+            calls <code>executeAction()</code> and persists the
+            application + status event before redirecting.
           </p>
         </CardHeader>
         <CardContent>
@@ -204,37 +205,40 @@ export default async function UnderwritingDecisionTab({ params }: Props) {
               application is either pre-Underwriting or in a terminal state.
             </div>
           ) : (
-            <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               {availableActions.map(({ action, label, to }) => (
                 <li
                   key={action}
-                  className="flex items-center justify-between rounded-md border border-line bg-background px-3 py-2"
+                  className="rounded-md border border-line bg-background p-3"
                 >
-                  <div className="text-sm">
-                    {label}
+                  <form
+                    action={runUWActionFromForm.bind(null, application.id)}
+                    className="space-y-2"
+                  >
+                    <input type="hidden" name="action" value={action} />
+                    <div className="text-sm font-medium">{label}</div>
                     <div className="text-[10px] text-muted-foreground tracking-wider uppercase font-mono">
                       → {to}
                     </div>
-                  </div>
-                  <Badge variant="muted">disabled</Badge>
+                    <textarea
+                      name="comments"
+                      rows={2}
+                      placeholder="Optional comments…"
+                      className="block w-full rounded-md border border-input bg-background px-2 py-1 text-xs"
+                    />
+                    <button
+                      type="submit"
+                      className="inline-flex items-center justify-center rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90"
+                    >
+                      Confirm {label}
+                    </button>
+                  </form>
                 </li>
               ))}
             </ul>
           )}
         </CardContent>
       </Card>
-
-      <StubBanner
-        pr="PR #4.5.1"
-        description="Wire each action into a Server Action that calls lib/status-flow.ts → executeAction() with the operator's identity, runs the precondition check (freshness gates), persists the application + status event, and redirects on success."
-        fields={[
-          "Server Action: runUWAction(applicationId, action, { comments })",
-          "Precondition gate (Application Verification freshness etc.)",
-          "Optimistic UI on success + redirect to next status workplace",
-          "Operator + IP + timestamp on every event",
-          "Bureau + Bank tabs surface the actual artifacts driving freshness",
-        ]}
-      />
     </div>
   );
 }
