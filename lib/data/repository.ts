@@ -20,6 +20,7 @@ import nsfEventsJson from "./fixtures/nsf_events.json";
 import creditProductsJson from "./fixtures/credit_products.json";
 import migrationRunsJson from "./fixtures/migration_runs.json";
 import cutoverItemsJson from "./fixtures/cutover_items.json";
+import uwNotesJson from "./fixtures/uw_notes.json";
 import type { Loan } from "../types/loan";
 import type { Vendor } from "../types/vendor";
 import type { Application, ApplicationStatusEvent } from "../types/application";
@@ -33,6 +34,7 @@ import type { NSFEvent } from "../types/nsf-event";
 import type { CreditProduct } from "../types/credit-product";
 import type { MigrationRun } from "../types/migration-run";
 import type { CutoverItem } from "../types/cutover";
+import type { UWNote } from "../types/uw-note";
 
 // Cast JSON imports to typed arrays. The fixtures are derived from the
 // legacy v1 dataset and conform to the schemas in lib/types/.
@@ -65,6 +67,10 @@ const MIGRATION_RUNS = migrationRunsJson as unknown as MigrationRun[];
 // PR #4.7 — Integration cutover checklist. Predefined items per provider;
 // operators tick them off via Server Actions on /cutover.
 const CUTOVER_ITEMS = cutoverItemsJson as unknown as CutoverItem[];
+
+// PR #4.5.2 — Underwriting notes. Append-only log per application,
+// extended in-memory by addUWNote.
+const UW_NOTES = uwNotesJson as unknown as UWNote[];
 
 export interface PortfolioKpis {
   summary: Record<string, number>;
@@ -278,5 +284,15 @@ export const repository = {
     if (idx < 0) return undefined;
     CUTOVER_ITEMS[idx] = { ...CUTOVER_ITEMS[idx], ...patch };
     return CUTOVER_ITEMS[idx];
+  },
+
+  // -- Underwriting notes (PR #4.5.2) ------------------------------------
+
+  async listUWNotesForApplication(application_id: string): Promise<UWNote[]> {
+    return UW_NOTES.filter((n) => n.application_id === application_id);
+  },
+  async addUWNote(note: UWNote): Promise<UWNote> {
+    UW_NOTES.push(note);
+    return note;
   },
 };
