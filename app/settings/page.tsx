@@ -118,6 +118,19 @@ export default function SettingsPage() {
         lands in PR #4.5.x.
       </a>
 
+      <a
+        href="/settings/decision-engine"
+        className="block rounded-lg border border-gold-dim/40 bg-navy-700/40 p-4 text-sm text-ink-dim hover:border-gold-dim hover:bg-navy-700"
+      >
+        <div className="text-[11px] font-semibold tracking-wider text-gold uppercase mb-1">
+          PR #4.8 · Loan Settings — Decision Engine (live)
+        </div>
+        Read-only viewer of the active scorecard rules + auto-decision
+        thresholds. The Underwriting Decision tab now surfaces the
+        recommendation per application using these. Editor lands in
+        PR #4.8.x once David commits credit policy v0.
+      </a>
+
       <StubBanner
         pr="PR #4"
         description="Decision Engine — scorecard rules and auto-decision thresholds. Default scorecard required at launch."

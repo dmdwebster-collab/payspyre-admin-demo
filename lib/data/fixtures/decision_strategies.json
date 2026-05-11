@@ -1,0 +1,16 @@
+[
+  {
+    "id": "strat-launch-v0",
+    "name": "Launch v0 (placeholder)",
+    "active": true,
+    "description": "Industry-default thresholds. Replace with David's credit policy v0 once committed (gates PR #4.8.x — see CLAUDE_HANDOFF §10).",
+    "bureau_score_auto_decline_below": 580,
+    "bureau_score_auto_approve_at_or_above": 720,
+    "auto_approve_max_amount_cad": 15000,
+    "ability_to_pay_score_min": 65,
+    "max_nsf_count_90d": 1,
+    "bankruptcy_lookback_months": 84,
+    "created_at": "2026-05-10T00:00:00.000Z",
+    "updated_at": "2026-05-10T00:00:00.000Z"
+  }
+]
