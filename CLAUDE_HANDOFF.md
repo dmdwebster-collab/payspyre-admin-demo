@@ -85,25 +85,25 @@ See §7 below for the revised PR ladder reflecting cutover priorities.
 | PR #4.3 | `redesign/servicing-workplace-pr4-3` | [#12](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/12) | **Merged to main** — Servicing workplace shell + Schedule viewer |
 | PR #4.4 | `redesign/collections-workplace-pr4-4` | [#13](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/13) | **Merged to main** — Collections NSF queue + DPD bucketing |
 | PR #4.4.1 | `redesign/nsf-detail-pr4-4-1` | [#14](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/14) | **Merged to main** — NSF event detail page + Resolve/Retry scaffold |
-| **PR #4.5** | **`redesign/underwriting-and-products-pr4-5`** | _open in this PR_ | **In progress** — Underwriting workplace shell + Loan Settings product viewer |
+| PR #4.5 | `redesign/underwriting-and-products-pr4-5` | [#15](https://github.com/dmdwebster-collab/payspyre-admin-demo/pull/15) | **Merged to main** — Underwriting workplace shell + Loan Settings product viewer |
+| **PR #4.6** | **`redesign/reports-migration-pr4-6`** | _open in this PR_ | **In progress** — Reports: TurnKey migration reconciliation viewer |
 
-PRs #1 → #4.4.1 are squashed onto main. PR #4.5 is the open draft.
+PRs #1 → #4.5 are squashed onto main. PR #4.6 is the open draft.
 
 ---
 
 ## 4. Where you are right now
 
-**Current branch:** `redesign/underwriting-and-products-pr4-5`
+**Current branch:** `redesign/reports-migration-pr4-6`
 **Stacked on:** `main`
-**Tests:** 158/158 passing (no new vitest files in this PR — UI-only)
+**Tests:** 158/158 passing (no new vitest files — UI-only)
 **Build:** `npm run build` clean
 
-This PR adds the Underwriting workplace shell (Loan Header + 5 tabs;
-Decision live, the others stubbed for PR #4.5.1 / #4.5.2) and the
-Loan Settings product viewer at `/settings/products` (read-only,
-surfaces the bracket model from PR #3.1 in real UI). Editor lands in
-PR #4.5.x.
->>>>>>> 11a78eb (PR #4.5: Underwriting workplace shell + Loan Settings product viewer)
+This PR adds the Reports → migration reconciliation viewer at
+`/reports/migration`. Re-runs the PR #4.2 migration runner against a
+small sample TurnKey export (`lib/migration/sample-export.ts`) and
+renders per-entity counts, money totals, and the issues list. The
+reg-facing reconciliation artifact for the cutover.
 
 ---
 

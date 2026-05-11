@@ -170,7 +170,15 @@ Carryovers from the existing TurnKey deployment are marked **(existing)**.
   product fixture) showing the bracket model from PR #3.1 (multi-frequency,
   amount brackets, per-bracket term + rate bands). Editor lands in
   PR #4.5.x.
-- **PR #4.6+ (workplace build-out):** Reports / reconciliation, Integration
+- **PR #4.6 (Reports — migration reconciliation viewer):** new route
+  `/reports/migration` runs the PR #4.2 `runMigration()` against a sample
+  TurnKey export (`lib/migration/sample-export.ts`) and renders the
+  result. Per-entity counts (exported / imported / failed / failure rate),
+  money totals (source vs imported, delta, WITHIN / EXCEEDS tolerance),
+  capped issues list. The reg-facing reconciliation artifact for the
+  cutover. Persistence (`migration_runs` table + diff view) follows in
+  PR #4.6.x.
+- **PR #4.7+ (workplace build-out):** Integration
   cutover, Decision Engine. Each fills in remaining `StubBanner`
   placeholders.
 >>>>>>> 11a78eb (PR #4.5: Underwriting workplace shell + Loan Settings product viewer)

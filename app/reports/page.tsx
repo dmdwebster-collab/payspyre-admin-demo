@@ -100,6 +100,19 @@ export default async function ReportsPage() {
         </CardContent>
       </Card>
 
+      <a
+        href="/reports/migration"
+        className="block rounded-lg border border-gold-dim/40 bg-navy-700/40 p-4 text-sm text-ink-dim hover:border-gold-dim hover:bg-navy-700"
+      >
+        <div className="text-[11px] font-semibold tracking-wider text-gold uppercase mb-1">
+          PR #4.6 · TurnKey migration reconciliation (live)
+        </div>
+        Live re-run of the PR #4.2 migration runner against a sample
+        TurnKey export. Per-entity counts, money totals (source vs
+        imported), and the structured issues list — the regulator-facing
+        artifact for the cutover.
+      </a>
+
       <StubBanner
         pr="PR #4"
         description="Business Performance Summary — geographical heat map of active loan locations + portfolio overview (size, disbursed, repaid, profit, profit/portfolio)."
